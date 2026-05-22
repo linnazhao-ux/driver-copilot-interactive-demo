@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Driver Co-pilot Interactive Demo</title>
+  <link rel="stylesheet" href="styles.css?v=20260521-home-head-smooth" />
+</head>
+<body>
+  <div class="demo-stage">
+    <div class="phone-device">
+      <div class="phone-btn btn-vol-up"></div>
+      <div class="phone-btn btn-vol-down"></div>
+      <div class="phone-btn btn-power"></div>
+      <div class="phone-screen-wrapper">
+        <div class="status-bar">
+          <span class="status-time">9:41</span>
+          <div class="status-pill"></div>
+          <div class="status-icons">
+            <span>5G</span>
+            <div class="battery"><span></span></div>
+          </div>
+        </div>
+        <main class="app-container" id="app"></main>
+        <nav class="driver-bottom-nav" id="bottom-nav" aria-label="Main navigation"></nav>
+        <div class="modal-root" id="modal-root"></div>
+        <div class="home-indicator-bar"><div class="home-indicator"></div></div>
+      </div>
+    </div>
+
+    <aside class="demo-panel">
+      <div class="demo-logo">
+        <span class="logo-mark">D</span>
+        <span>Driver Delivery</span>
+      </div>
+      <h1>Driver Co-pilot<br />Interactive Demo</h1>
+      <p>Delivery-mode list and detail flows restyled to match the current Driver App visual language.</p>
+      <nav class="scenario-nav" id="scenario-nav">
+        <button class="scenario-item active" data-screen="home">
+          <span>1</span>
+          <strong>Home Page</strong>
+          <small>Daily dashboard and task entry</small>
+        </button>
+        <button class="scenario-item" data-screen="todo">
+          <span>2</span>
+          <strong>Task Brief</strong>
+          <small>Briefing card and special order detail</small>
+        </button>
+        <button class="scenario-item" data-screen="delay">
+          <span>3</span>
+          <strong>Operation Guidance</strong>
+          <small>Delay alert, suggest transfer/redelivery</small>
+        </button>
+        <button class="scenario-item" data-screen="guidance">
+          <span>4</span>
+          <strong>Driver Guidance</strong>
+          <small>Hard-to-find navigation support</small>
+        </button>
+      </nav>
+      <div class="demo-tip">Tap phone cards and red actions to move through each flow.</div>
+    </aside>
+  </div>
+  <script src="app.js?v=20260521-home-head-smooth"></script>
+</body>
+</html>

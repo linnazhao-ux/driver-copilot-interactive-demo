@@ -1,0 +1,32 @@
+{
+  "retcode": 0,
+  "message": "success",
+  "data": {
+    "building_photos": [
+      {
+        "url": "/downloads/2026/01/22/PH_JLoi_354774_1769054389017_0_PH268590126032Q_photo2.jpg",
+        "order_id": "PH268590126032Q",
+        "driver_id": "359947",
+        "order_type": 2,
+        "is_delivery_done": true,
+        "is_onhold": false,
+        "grass_date": "2026-01-22",
+        "image_lat": 7.0442088,
+        "image_lng": 125.5874707,
+        "image_shooting_time": 1771993259
+      },
+      {
+        "url": "downloads/2026/01/14/PH_MxlC_392437_1768365905729_0_PH261399378178U_photo2.jpg",
+        "order_id": "PH261399378178U",
+        "driver_id": "392437",
+        "order_type": 2,
+        "is_delivery_done": true,
+        "is_onhold": false,
+        "grass_date": "2026-01-14",
+        "image_lat": 7.0442088,
+        "image_lng": 125.5874707,
+        "image_shooting_time": 1771993259
+      }
+    ]
+  }
+}

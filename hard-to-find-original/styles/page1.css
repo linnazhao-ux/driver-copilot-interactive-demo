@@ -1,0 +1,410 @@
+/* =========================================
+   Page 1 — PT Task Detail
+   ========================================= */
+
+/* ---- Back Bar ---- */
+.p1-back-bar {
+  background: #fff;
+  padding: 8px 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.p1-back-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  color: var(--text-primary);
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.p1-back-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-dark);
+  letter-spacing: -0.2px;
+}
+
+.p1-back-btn:hover {
+  background: #f0f0f0;
+}
+
+.p1-back-btn:active {
+  background: #e5e5e5;
+}
+
+/* ---- Address Header ---- */
+.address-header {
+  background: #fff;
+  padding: 18px 16px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.address-header-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.address-name {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 6px;
+  letter-spacing: -0.3px;
+}
+
+.address-text {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.nav-icon-btn {
+  width: 48px;
+  height: 48px;
+  background: var(--primary);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(232,68,54,0.35);
+  transition: transform 0.15s, opacity 0.15s;
+}
+
+.nav-icon-btn:active {
+  transform: scale(0.93);
+  opacity: 0.9;
+}
+
+/* ---- Hard to Find Banner ---- */
+.hard-to-find-banner {
+  background: var(--banner-bg);
+  padding: 11px 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+  user-select: none;
+}
+
+.hard-to-find-banner:active {
+  background: #dde3ff;
+}
+
+.htf-icon {
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--link);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--link);
+  font-size: 11px;
+  font-weight: 800;
+  flex-shrink: 0;
+  font-style: normal;
+}
+
+.htf-grey {
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.htf-blue {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--link);
+}
+
+.htf-chevron {
+  margin-left: auto;
+  color: var(--link);
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* ---- Payment Amount ---- */
+.payment-section {
+  background: #fff;
+  padding: 16px;
+}
+
+.payment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.payment-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.payment-total-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+.payment-amount {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: -0.5px;
+}
+
+.payment-currency {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.payment-caret {
+  color: var(--text-secondary);
+  font-size: 13px;
+  transition: transform 0.25s;
+  display: inline-block;
+}
+
+.payment-caret.up {
+  transform: rotate(0deg);
+}
+
+.payment-caret.down {
+  transform: rotate(180deg);
+}
+
+.payment-detail-area {
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  max-height: 0;
+  opacity: 0;
+}
+
+.payment-detail-area.open {
+  max-height: 100px;
+  opacity: 1;
+}
+
+.payment-detail-inner {
+  padding-top: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-top: 1px solid var(--border);
+  margin-top: 12px;
+}
+
+.payment-detail-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.payment-detail-values {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.payment-detail-value {
+  font-size: 13px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* ---- Receiver Information ---- */
+.receiver-section {
+  background: #fff;
+  padding: 16px;
+}
+
+.receiver-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 14px;
+}
+
+.contact-block {
+  margin-bottom: 12px;
+}
+
+.contact-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 3px;
+}
+
+.contact-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.contact-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.contact-phone {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f1f1f1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s;
+  color: var(--text-secondary);
+}
+
+.icon-btn.dim {
+  background: #f8f8f8;
+  color: #c8c8c8;
+}
+
+.icon-btn:active {
+  background: #e5e5e5;
+}
+
+.alt-label {
+  font-size: 11.5px;
+  color: var(--text-light);
+  margin-bottom: 3px;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+}
+
+/* ---- Order List ---- */
+.order-section {
+  background: #fff;
+  padding: 16px;
+}
+
+.order-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 14px;
+}
+
+.order-item {
+  padding: 12px 0;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.order-item:last-child {
+  border-bottom: none;
+  padding-bottom: 4px;
+}
+
+.order-item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.order-id {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-dark);
+  font-family: 'SF Mono', 'Courier New', monospace;
+  letter-spacing: 0.2px;
+}
+
+.order-amount {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.order-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+/* Tags */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 9px;
+  border-radius: 100px;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.tag-filled-red {
+  background: var(--primary);
+  color: #fff;
+}
+
+.tag-outline {
+  border: 1px solid var(--tag-border);
+  color: var(--text-secondary);
+  background: transparent;
+}
+
+.tag-outline-warning {
+  border: 1px solid #ffab40;
+  color: #e65100;
+  background: #fff8f0;
+}
+
+/* ---- Bottom Button ---- */
+.bottom-action {
+  position: sticky;
+  bottom: 0;
+  padding: 10px 16px 14px;
+  background: linear-gradient(to top, #fff 65%, rgba(255,255,255,0));
+}
+
+.btn-primary {
+  width: 100%;
+  height: 50px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-size: 15.5px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font);
+  letter-spacing: 0.1px;
+  box-shadow: 0 4px 14px rgba(232,68,54,0.35);
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.btn-primary:active {
+  opacity: 0.9;
+  transform: scale(0.98);
+}

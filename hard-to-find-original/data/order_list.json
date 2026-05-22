@@ -1,0 +1,163 @@
+{
+  "activeTab": "todo",
+  "todoBadgeCount": 26,
+  "cases": [
+    {
+      "id": "hangdao",
+      "buyerName": "巷道配送区 - Hangdao",
+      "address": "Hangdao Canal Side St., Unit 4, Davao City 8000",
+      "orderCount": 2,
+      "remark": "",
+      "actionTags": [
+        { "text": "Home", "style": "outline" },
+        { "text": "Call Seller", "style": "outline" }
+      ],
+      "dataKey": "hangdao",
+      "receiver": {
+        "name": "Wang Hang",
+        "address": "Hangdao Canal Side St., Unit 4, Davao City 8000",
+        "phone": "6391987654321",
+        "alternativePhone": "6391987654322"
+      },
+      "payment": {
+        "total": "4,200",
+        "currency": "PHP",
+        "details": [
+          { "type": "COD", "amount": "4,000" },
+          { "type": "ASF", "amount": "200" }
+        ]
+      },
+      "orders": [
+        {
+          "id": "PH268590126032Q",
+          "amount": "2,500",
+          "currency": "PHP",
+          "tags": [
+            { "text": "COD Cek Dulu", "style": "filled_red" },
+            { "text": "ASF", "style": "outline" }
+          ]
+        },
+        {
+          "id": "PH261399378178U",
+          "amount": "1,700",
+          "currency": "PHP",
+          "tags": [
+            { "text": "COD", "style": "outline" },
+            { "text": "Left 3 Days", "style": "outline_warning", "icon": "timer" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gaosu",
+      "buyerName": "公路边配送 - Gaosu",
+      "address": "Gaosu Highway Service Rd., Bldg C, Davao City 8000",
+      "orderCount": 4,
+      "remark": "high-speed area, need to park at service road",
+      "actionTags": [
+        { "text": "Đồng Kiểm", "style": "filled_red" },
+        { "text": "Home", "style": "outline" },
+        { "text": "Call Seller", "style": "outline" }
+      ],
+      "dataKey": "gaosu",
+      "receiver": {
+        "name": "Nick Chan",
+        "address": "Gaosu Highway Service Rd., Bldg C, Davao City 8000",
+        "phone": "6287772563080",
+        "alternativePhone": "6287772563123"
+      },
+      "payment": {
+        "total": "3,600",
+        "currency": "PHP",
+        "details": [
+          { "type": "COD", "amount": "3,500" },
+          { "type": "ASF", "amount": "100" }
+        ]
+      },
+      "orders": [
+        {
+          "id": "PH2606405578627",
+          "amount": "3,100",
+          "currency": "PHP",
+          "tags": [
+            { "text": "COD Cek Dulu", "style": "filled_red" },
+            { "text": "ROS", "style": "outline" },
+            { "text": "ASF", "style": "outline" }
+          ]
+        },
+        {
+          "id": "PH2606405578628",
+          "amount": "500",
+          "currency": "PHP",
+          "tags": [
+            { "text": "Left 7 Days", "style": "outline_warning", "icon": "timer" },
+            { "text": "COD", "style": "outline" }
+          ]
+        },
+        {
+          "id": "PH2606405578629",
+          "amount": null,
+          "currency": "PHP",
+          "tags": []
+        },
+        {
+          "id": "PH2606405578630",
+          "amount": null,
+          "currency": "PHP",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "id": "nongchang",
+      "buyerName": "农场配送站 - Nongchang",
+      "address": "Nongchang Farm Road, Block B, Davao City 8000",
+      "orderCount": 3,
+      "remark": "The farm area is a bit hard to find; pay attention to the main entrance.",
+      "actionTags": [],
+      "dataKey": "nongchang",
+      "receiver": {
+        "name": "Chen Nong",
+        "address": "Nongchang Farm Road, Block B, Davao City 8000",
+        "phone": "6391234567890",
+        "alternativePhone": "6391234567899"
+      },
+      "payment": {
+        "total": "2,800",
+        "currency": "PHP",
+        "details": [
+          { "type": "COD", "amount": "2,600" },
+          { "type": "ASF", "amount": "200" }
+        ]
+      },
+      "orders": [
+        {
+          "id": "PH2660155506407",
+          "amount": "1,500",
+          "currency": "PHP",
+          "tags": [
+            { "text": "COD Cek Dulu", "style": "filled_red" },
+            { "text": "ROS", "style": "outline" }
+          ]
+        },
+        {
+          "id": "PH2660155506408",
+          "amount": "800",
+          "currency": "PHP",
+          "tags": [
+            { "text": "Left 5 Days", "style": "outline_warning", "icon": "timer" },
+            { "text": "COD", "style": "outline" }
+          ]
+        },
+        {
+          "id": "PH2660155506409",
+          "amount": "500",
+          "currency": "PHP",
+          "tags": [
+            { "text": "ASF", "style": "outline" }
+          ]
+        }
+      ]
+    }
+  ]
+}

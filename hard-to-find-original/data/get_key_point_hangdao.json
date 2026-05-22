@@ -1,0 +1,232 @@
+{
+  "retcode": 0,
+  "message": "success",
+  "data": {
+    "key_point": {
+      "lat": "7.0441439",
+      "lng": "125.5870863",
+      "heading_to_next_point": "93.3088"
+    },
+    "track_from_key_point_to_target": [
+      {
+        "ctime": 1769054249,
+        "lat": "7.0441439",
+        "lng": "125.5870863",
+        "speed": "0.7291",
+        "speed_to_next_point": "0.8092",
+        "heading": "59.2572",
+        "heading_to_next_point": "93.3088",
+        "client_id": "7ca7b5e29bf78fd0",
+        "sequence": 8
+      },
+      {
+        "ctime": 1769054254,
+        "lat": "7.0441418",
+        "lng": "125.5871229",
+        "speed": "0.9454",
+        "speed_to_next_point": "1.18",
+        "heading": "71.6903",
+        "heading_to_next_point": "59.787",
+        "client_id": "7ca7b5e29bf78fd0",
+        "sequence": 9
+      },
+      {
+        "ctime": 1769054259,
+        "lat": "7.0441685",
+        "lng": "125.5871691",
+        "speed": "1.2144",
+        "speed_to_next_point": "0.9425",
+        "heading": "58.2621",
+        "heading_to_next_point": "54.3508",
+        "client_id": "7ca7b5e29bf78fd0",
+        "sequence": 10
+      },
+      {
+        "ctime": 1769054264,
+        "lat": "7.0441932",
+        "lng": "125.5872038",
+        "speed": "0.6384",
+        "speed_to_next_point": "0.7333",
+        "heading": "48.7621",
+        "heading_to_next_point": "46.4967",
+        "client_id": "7ca7b5e29bf78fd0",
+        "sequence": 11
+      },
+      {
+        "ctime": 1769054269,
+        "lat": "7.0442159",
+        "lng": "125.5872279",
+        "speed": "0.6586",
+        "speed_to_next_point": "1.3072",
+        "heading": "62.4714",
+        "heading_to_next_point": "119.7874",
+        "client_id": "7ca7b5e29bf78fd0",
+        "sequence": 12
+      },
+      {
+        "ctime": 1769054274,
+        "lat": "7.0441867",
+        "lng": "125.5872793",
+        "speed": "1.1015",
+        "speed_to_next_point": "0.6986",
+        "heading": "98.2315",
+        "heading_to_next_point": "93.2849",
+        "client_id": "7ca7b5e29bf78fd0",
+        "sequence": 13
+      },
+      {
+        "ctime": 1769054279,
+        "lat": "7.0441849",
+        "lng": "125.5873109",
+        "speed": "0.4851",
+        "speed_to_next_point": "2.0262",
+        "heading": "90.9647",
+        "heading_to_next_point": "89.4969",
+        "client_id": "7ca7b5e29bf78fd0",
+        "sequence": 14
+      },
+      {
+        "ctime": 1769054284,
+        "lat": "7.0441857",
+        "lng": "125.5874027",
+        "speed": "0.9544",
+        "speed_to_next_point": "1.0924",
+        "heading": "76.0858",
+        "heading_to_next_point": "78.4919",
+        "client_id": "7ca7b5e29bf78fd0",
+        "sequence": 15
+      },
+      {
+        "ctime": 1769054289,
+        "lat": "7.0441955",
+        "lng": "125.5874512",
+        "speed": "1.0189",
+        "speed_to_next_point": "0.9135",
+        "heading": "61.6626",
+        "heading_to_next_point": "44.0951",
+        "client_id": "7ca7b5e29bf78fd0",
+        "sequence": 16
+      },
+      {
+        "ctime": 1769054294,
+        "lat": "7.044225",
+        "lng": "125.58748",
+        "speed": "0.3488",
+        "speed_to_next_point": "0.2304",
+        "heading": "84.9573",
+        "heading_to_next_point": "209.6719",
+        "client_id": "7ca7b5e29bf78fd0",
+        "sequence": 17
+      },
+      {
+        "ctime": 1769054303,
+        "lat": "7.0442088",
+        "lng": "125.5874707",
+        "speed": "0.473",
+        "speed_to_next_point": "0.832",
+        "heading": "157.5716",
+        "heading_to_next_point": "198.8823",
+        "client_id": "7ca7b5e29bf78fd0",
+        "sequence": 18
+      },
+      {
+        "ctime": 1769054308,
+        "lat": "7.0441734",
+        "lng": "125.5874585",
+        "speed": "0.4825",
+        "speed_to_next_point": "0.2077",
+        "heading": "161.2894",
+        "heading_to_next_point": "208.5744",
+        "client_id": "7ca7b5e29bf78fd0",
+        "sequence": 19
+      },
+      {
+        "ctime": 1769054313,
+        "lat": "7.0441652",
+        "lng": "125.587454",
+        "speed": "0.3518",
+        "speed_to_next_point": "0.3129",
+        "heading": "161.6296",
+        "heading_to_next_point": "289.0802",
+        "client_id": "7ca7b5e29bf78fd0",
+        "sequence": 20
+      },
+      {
+        "ctime": 1769054318,
+        "lat": "7.0441698",
+        "lng": "125.5874406",
+        "speed": "0.5546",
+        "speed_to_next_point": "0.1535",
+        "heading": "139.1051",
+        "heading_to_next_point": "0.824",
+        "client_id": "7ca7b5e29bf78fd0",
+        "sequence": 21
+      },
+      {
+        "ctime": 1769054323,
+        "lat": "7.0441767",
+        "lng": "125.5874407",
+        "speed": "0.2951",
+        "speed_to_next_point": "0.7142",
+        "heading": "7.1399",
+        "heading_to_next_point": "342.9277",
+        "client_id": "7ca7b5e29bf78fd0",
+        "sequence": 22
+      },
+      {
+        "ctime": 1769054328,
+        "lat": "7.0442074",
+        "lng": "125.5874312",
+        "speed": "0.0943",
+        "speed_to_next_point": "0.1757",
+        "heading": "0",
+        "heading_to_next_point": "1.0796",
+        "client_id": "7ca7b5e29bf78fd0",
+        "sequence": 23
+      },
+      {
+        "ctime": 1769054338,
+        "lat": "7.0442232",
+        "lng": "125.5874315",
+        "speed": "0.803",
+        "speed_to_next_point": "0.8008",
+        "heading": "258.9832",
+        "heading_to_next_point": "230.5088",
+        "client_id": "7ca7b5e29bf78fd0",
+        "sequence": 24
+      }
+    ],
+    "key_point_in_walk": [
+      {
+        "lat": "7.0441867",
+        "lng": "125.5872793",
+        "speed": "1.1015",
+        "speed_to_next_point": "0.6986",
+        "heading": "98.2315",
+        "sequence": 13,
+        "ctime": 1769054274,
+        "type": "turning"
+      },
+      {
+        "lat": "7.0442088",
+        "lng": "125.5874707",
+        "speed": "0.473",
+        "speed_to_next_point": "0.832",
+        "heading": "157.5716",
+        "sequence": 18,
+        "ctime": 1769054303,
+        "type": "turning"
+      },
+      {
+        "lat": "7.0441767",
+        "lng": "125.5874407",
+        "speed": "0.2951",
+        "speed_to_next_point": "0.7142",
+        "heading": "7.1399",
+        "sequence": 22,
+        "ctime": 1769054323,
+        "type": "turning"
+      }
+    ]
+  }
+}

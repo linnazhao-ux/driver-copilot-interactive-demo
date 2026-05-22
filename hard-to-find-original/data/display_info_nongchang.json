@@ -1,0 +1,20 @@
+{
+  "retcode": 0,
+  "message": "success",
+  "data": {
+    "building_photos": [
+      {
+        "url": "/downloads/2026/02/25/PH_JMmH_359947_1771993292104_0_PH2660155506407_photo2.jpg",
+        "order_id": "PH2660155506407",
+        "driver_id": "359947",
+        "order_type": 2,
+        "is_delivery_done": true,
+        "is_onhold": false,
+        "grass_date": "2026-02-25",
+        "image_lat": 14.9629211,
+        "image_lng": 120.1630851,
+        "image_shooting_time": 1771993259
+      }
+    ]
+  }
+}

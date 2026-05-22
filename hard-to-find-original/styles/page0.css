@@ -1,0 +1,316 @@
+/* =========================================
+   Page 0 — Order List
+   ========================================= */
+
+.ol-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  background: var(--bg-page);
+  font-family: var(--font-stack);
+}
+
+/* ── App Bar ── */
+.ol-app-bar {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  padding: 0 12px;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.ol-hamburger {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+.ol-hamburger-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 50%;
+  border: 1.5px solid #fff;
+}
+
+.ol-biz-selector {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border: 1px solid #D0D0D0;
+  border-radius: 20px;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.ol-bar-spacer {
+  flex: 1;
+}
+
+.ol-bar-icons {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.ol-bar-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.ol-bar-icon-btn:hover {
+  background: #F0F0F0;
+}
+
+/* ── Tab Bar ── */
+.ol-tabs {
+  display: flex;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.ol-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 44px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  position: relative;
+  white-space: nowrap;
+  padding: 0 4px;
+}
+
+.ol-tab-active {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.ol-tab-active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  right: 10%;
+  height: 2.5px;
+  background: var(--primary);
+  border-radius: 2px 2px 0 0;
+}
+
+.ol-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: inherit;
+}
+
+/* ── Sort Controls ── */
+.ol-sort-row {
+  display: flex;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.ol-sort-btn {
+  flex: 1;
+  height: 40px;
+  background: none;
+  border: none;
+  border-right: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.ol-sort-btn-right {
+  border-right: none;
+}
+
+.ol-sort-btn:hover {
+  background: #F8F8F8;
+}
+
+/* ── Display in Map ── */
+.ol-map-btn {
+  display: none;
+}
+
+/* ── List ── */
+.ol-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.ol-empty {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* ── Buyer Group ── */
+.ol-buyer-group {
+  margin-bottom: 10px;
+}
+
+.ol-group-header {
+  padding: 6px 14px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: #F5F5F5;
+}
+
+/* ── Buyer Card ── */
+.ol-card {
+  background: #fff;
+  padding: 12px 14px 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-bottom: 1px solid var(--border);
+  outline: none;
+}
+
+.ol-card:hover,
+.ol-card:focus {
+  background: #FAFAFA;
+}
+
+.ol-card:active {
+  background: #F5F5F5;
+}
+
+.ol-card-main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ol-card-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.ol-card-addr-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.ol-pin-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ol-card-addr {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.ol-card-order-count {
+  margin-top: 4px;
+  padding-left: 21px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.ol-card-btns {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.ol-icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #F0F0F0;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+}
+
+.ol-icon-btn:hover {
+  background: #E5E5E5;
+}
+
+/* ── Remark Pill ── */
+.ol-card-remark {
+  margin-top: 8px;
+  padding: 5px 10px;
+  background: #FFF8E1;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #D4920A;
+  line-height: 1.4;
+}
+
+/* ── Action Tag Row ── */
+.ol-card-action-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.ol-action-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: default;
+}
+
+.ol-action-tag-red {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+}
+
+.ol-action-tag-outline {
+  background: #fff;
+  color: var(--text-secondary);
+  border: 1px solid #CCCCCC;
+}
