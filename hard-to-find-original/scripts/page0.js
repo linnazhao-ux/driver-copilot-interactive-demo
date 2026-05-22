@@ -78,12 +78,6 @@ function renderPage0(data) {
 
       <!-- App Bar -->
       <div class="ol-app-bar">
-        <button class="ol-hamburger" title="Menu">
-          <span class="ol-hamburger-dot"></span>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-          </svg>
-        </button>
         <div class="ol-biz-selector">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="1" y="3" width="15" height="13" rx="1"/>

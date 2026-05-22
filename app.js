@@ -219,6 +219,7 @@ const state = {
   showDrawer: false,
   showComingSoon: false,
   comingSoonTop: 360,
+  toastText: "Coming soon",
   deliveryTab: "To-do",
   briefBackScreen: "todo",
   transferMode: "single",
@@ -232,7 +233,12 @@ const state = {
   walkingActive: false,
   navSubmitted: false,
   improvePhotos: [],
-  improveDescription: ""
+  improveDescription: "",
+  chatbotScenario: "welcome",
+  chatbotFeedback: null,
+  chatbotBackScreen: "home",
+  selectedNotificationId: "redelivery",
+  scanBackScreen: "home"
 };
 
 let comingSoonTimer = null;
@@ -245,6 +251,7 @@ const icons = {
   settings: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.7 1.7 0 00.34 1.88l.04.04a2 2 0 01-2.83 2.83l-.04-.04A1.7 1.7 0 0015 19.4a1.7 1.7 0 00-1 .6 1.7 1.7 0 00-.4 1.08V21a2 2 0 01-4 0v-.08A1.7 1.7 0 008.6 19.4a1.7 1.7 0 00-1.88.34l-.04.04a2 2 0 01-2.83-2.83l.04-.04A1.7 1.7 0 004.6 15a1.7 1.7 0 00-.6-1 1.7 1.7 0 00-1.08-.4H3a2 2 0 010-4h.08A1.7 1.7 0 004.6 8.6a1.7 1.7 0 00-.34-1.88l-.04-.04a2 2 0 012.83-2.83l.04.04A1.7 1.7 0 009 4.6c.35 0 .7-.1 1-.3a1.7 1.7 0 00.6-1.22V3a2 2 0 014 0v.08c0 .48.2.92.6 1.22.3.2.65.3 1 .3a1.7 1.7 0 001.88-.34l.04-.04a2 2 0 012.83 2.83l-.04.04A1.7 1.7 0 0019.4 9c0 .35.1.7.3 1 .3.4.74.6 1.22.6H21a2 2 0 010 4h-.08a1.7 1.7 0 00-1.52.4z"/></svg>',
   ticket: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7a2 2 0 012-2h12a2 2 0 012 2v3a2 2 0 000 4v3a2 2 0 01-2 2H6a2 2 0 01-2-2v-3a2 2 0 000-4z"/><path d="M9 9h6"/><path d="M9 15h4"/></svg>',
   qr: '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h7v7H3V3zm2 2v3h3V5H5zm9-2h7v7h-7V3zm2 2v3h3V5h-3zM3 14h7v7H3v-7zm2 2v3h3v-3H5zm11-2h2v2h-2v-2zm3 0h2v3h-2v-3zm-5 4h2v3h-2v-3zm3 1h4v2h-4v-2z"/></svg>',
+  scan: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M7 3H4a1 1 0 00-1 1v3"/><path d="M17 3h3a1 1 0 011 1v3"/><path d="M7 21H4a1 1 0 01-1-1v-3"/><path d="M17 21h3a1 1 0 001-1v-3"/><path d="M7 12h10"/></svg>',
   pickup: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 7h12l-1 14H7L6 7z"/><path d="M9 7a3 3 0 016 0"/><path d="M12 11v6"/><path d="M9 14h6"/></svg>',
   user: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>',
   bot: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="8" width="14" height="10" rx="3"/><path d="M12 4v4"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/><path d="M9 18v2h6v-2"/></svg>',
@@ -270,12 +277,11 @@ function appBar(title = "Delivery", withBack = false) {
 
   const chipIcon = title === "Home" ? icons.home : title === "Chatbot" ? icons.bot : title === "Profile" ? icons.user : icons.box;
   return `
-    <div class="app-bar">
-      <button class="app-icon-btn" data-action="open-menu">${icons.menu}</button>
+    <div class="app-bar app-bar-left-chip">
       <div class="biz-chip">${chipIcon} <span>${title}</span>${title === "Delivery" ? ' <span class="chip-caret">▾</span>' : ""}</div>
       <div class="spacer"></div>
       <button class="app-icon-btn">${icons.search}</button>
-      <button class="app-icon-btn">${icons.bell}</button>
+      <button class="app-icon-btn" data-action="message-center">${icons.bell}</button>
     </div>`;
 }
 
@@ -287,7 +293,18 @@ function bottomNavActive() {
 }
 
 function shouldShowBottomNav() {
-  return ["home", "todo", "delay", "chatbot", "profile"].includes(state.screen);
+  return ["home", "todo", "delay", "profile"].includes(state.screen);
+}
+
+function chatbotAppBar() {
+  return `
+    <div class="app-bar app-bar-left-chip chatbot-app-bar">
+      <button class="app-icon-btn chatbot-back-btn" data-action="back" aria-label="Back">${icons.back}</button>
+      <div class="biz-chip">${icons.bot} <span>Chatbot</span></div>
+      <div class="spacer"></div>
+      <button class="app-icon-btn">${icons.search}</button>
+      <button class="app-icon-btn" data-action="message-center">${icons.bell}</button>
+    </div>`;
 }
 
 function renderBottomNav() {
@@ -439,7 +456,7 @@ function renderHomePage() {
           <span class="home-weather">20°C</span>
           <button class="home-search-pill">${icons.search}<span>Search order by order number or phone number</span></button>
           <button class="home-head-icon" data-action="message-center" aria-label="Message center">${icons.bell}</button>
-          <button class="home-head-icon home-add-btn" aria-label="Add">+</button>
+          <button class="home-head-icon home-scan-btn" data-action="bottom-scan" aria-label="Scan parcel">${icons.scan}</button>
         </div>
         <div class="home-dashboard-card today-summary">
           <button class="summary-main summary-assigned" data-action="home-tab-jump" data-tab="To-do"><strong>${stats.total}</strong><span>Assigned Today</span></button>
@@ -451,7 +468,7 @@ function renderHomePage() {
         </div>
       </section>
 
-      <section class="home-notice-card" data-action="open-order-detail" data-order="${orders[2].id}" data-scenario="home" role="button" tabindex="0">
+      <section class="home-notice-card" data-action="notification-detail" data-notification="redelivery" role="button" tabindex="0">
         <span class="notice-icon">${icons.bell}</span>
         <span>One order need redelivery</span>
         <em>1h ago</em>
@@ -792,51 +809,406 @@ function renderScanPage() {
     </section>`;
 }
 
-function renderChatbotPage() {
+const chatbotFlows = {
+  welcome: {
+    chips: [
+      { label: "How do I upload POD?", scenario: "pod" },
+      { label: "Where is my COD payment?", scenario: "payment" },
+      { label: "I cannot login", scenario: "login" },
+      { label: "I have two issues", scenario: "multi" }
+    ]
+  },
+  pod: {
+    user: "How do I upload POD?",
+    intent: "Delivery SOP",
+    tag: "pod_upload",
+    confidence: "92%",
+    status: "Personalized answer",
+    hideMeta: true,
+    reply: [
+      "You can upload POD after selecting the target delivery order.",
+      "Make sure the proof photo clearly shows the parcel and delivery location before submitting.",
+      "If the buyer is unreachable, use the on-hold SOP instead of uploading POD."
+    ],
+    path: ["To do", "Open target order", "Update Delivery Status", "Scan parcel", "Upload POD photo", "Submit"],
+    next: "Need more help? I can create a support ticket for this order.",
+    chips: [
+      { label: "Create support ticket", scenario: "human" },
+      { label: "Ask about COD payment", scenario: "payment" },
+      { label: "Start new question", scenario: "welcome" }
+    ]
+  },
+  payment: {
+    user: "Where is my COD payment?",
+    intent: "Payment",
+    tag: "cod_reconciliation",
+    confidence: "88%",
+    status: "FMS data retrieved",
+    reply: [
+      "Your current COD collection for today's route is 0 IDR.",
+      "No pending COD settlement is detected for this device session.",
+      "If the amount looks wrong after route completion, create a payment support ticket."
+    ],
+    next: "This answer uses available FMS data. If data is delayed, I can help with general payment SOP instead.",
+    chips: [
+      { label: "Create payment ticket", scenario: "human" },
+      { label: "Ask delivery SOP", scenario: "pod" },
+      { label: "Start new question", scenario: "welcome" }
+    ]
+  },
+  login: {
+    user: "I cannot login",
+    intent: "Account",
+    tag: "login_issue",
+    confidence: "57%",
+    status: "Low confidence",
+    reply: [
+      "I need one more detail to route this correctly.",
+      "Are you unable to receive OTP, seeing an account error, or using a new device?"
+    ],
+    clarification: [
+      { label: "OTP issue", scenario: "loginOtp" },
+      { label: "Account suspended", scenario: "suspended" },
+      { label: "New device login", scenario: "loginDevice" }
+    ]
+  },
+  loginOtp: {
+    user: "OTP issue",
+    intent: "Account",
+    tag: "login_otp_issue",
+    confidence: "91%",
+    status: "Clarified tag",
+    reply: [
+      "Check that your registered phone number is active and has network signal.",
+      "Wait 60 seconds before requesting a new OTP.",
+      "If OTP still does not arrive, I can create an account support ticket."
+    ],
+    chips: [
+      { label: "Create account ticket", scenario: "human" },
+      { label: "Start new question", scenario: "welcome" }
+    ]
+  },
+  loginDevice: {
+    user: "New device login",
+    intent: "Account",
+    tag: "device_change",
+    confidence: "86%",
+    status: "Clarified tag",
+    reply: [
+      "Use your registered phone number and complete OTP verification on the new device.",
+      "If the app says device verification failed, contact hub support or create an account ticket here."
+    ],
+    chips: [
+      { label: "Create account ticket", scenario: "human" },
+      { label: "Start new question", scenario: "welcome" }
+    ]
+  },
+  suspended: {
+    user: "Account suspended",
+    intent: "Account",
+    tag: "driver_suspended",
+    confidence: "94%",
+    status: "Access restricted",
+    reply: [
+      "Your account status may require manual review.",
+      "The chatbot cannot change suspension status directly.",
+      "I can create a support case so the operations team can check your account."
+    ],
+    chips: [
+      { label: "Create account case", scenario: "human" },
+      { label: "Start new question", scenario: "welcome" }
+    ]
+  },
+  multi: {
+    user: "I cannot login and I need to know COD payment",
+    intent: "Multiple intents",
+    tag: "login_issue + cod_reconciliation",
+    confidence: "2 tags detected",
+    status: "Choose one topic",
+    reply: [
+      "I detected more than one issue.",
+      "Which one should I help with first?"
+    ],
+    clarification: [
+      { label: "Login issue", scenario: "login" },
+      { label: "COD payment", scenario: "payment" }
+    ]
+  },
+  human: {
+    user: "Create support ticket",
+    intent: "Human Support",
+    tag: "case_creation",
+    confidence: "Message limit or driver request",
+    status: "Case template ready",
+    reply: [
+      "I'll create a support ticket so our team can help you further.",
+      "Please confirm the topic and add a short description before submitting."
+    ],
+    caseCard: true,
+    chips: [
+      { label: "Back to chatbot", scenario: "welcome" }
+    ]
+  }
+};
+
+function chatbotMetaCard(flow) {
+  if (!flow.intent || flow.hideMeta) return "";
   return `
-    ${appBar("Chatbot")}
-    <div class="content tab-page">
-      <section class="tab-hero-card">
-        <div class="tab-hero-icon">${icons.bot}</div>
+    <div class="chatbot-meta-card">
+      <div><span>Intent</span><strong>${flow.intent}</strong></div>
+      <div><span>Tag</span><strong>${flow.tag}</strong></div>
+      <div><span>Confidence</span><strong>${flow.confidence}</strong></div>
+    </div>`;
+}
+
+function chatbotPathCard(flow) {
+  if (!flow.path) return "";
+  return `
+    <div class="chatbot-path-card">
+      <strong>Guided path</strong>
+      <div>
+        ${flow.path.map((step, index) => `<span>${index + 1}. ${step}</span>`).join("")}
+      </div>
+    </div>`;
+}
+
+function chatbotFeedbackRow() {
+  const upActive = state.chatbotFeedback === "up" ? "active" : "";
+  const downActive = state.chatbotFeedback === "down" ? "active" : "";
+  const note = state.chatbotFeedback === "down"
+    ? `<div class="chatbot-feedback-note">Thanks. This response will be flagged for improvement review.</div>`
+    : state.chatbotFeedback === "up"
+      ? `<div class="chatbot-feedback-note">Thanks for the feedback.</div>`
+      : "";
+  return `
+    <div class="chatbot-feedback-row">
+      <span>Was this helpful?</span>
+      <button class="${upActive}" data-action="chatbot-feedback" data-feedback="up">Useful</button>
+      <button class="${downActive}" data-action="chatbot-feedback" data-feedback="down">Not useful</button>
+    </div>
+    ${note}`;
+}
+
+function chatbotConversation(flow) {
+  if (!flow.user) {
+    return `
+      <div class="chat-bubble system">Hello, I'm SPX Driver Support Assistant. I can help with delivery SOP, payment, account, pickup and registration questions.</div>
+      <div class="chatbot-capability-grid">
+        <span>Delivery SOP</span>
+        <span>Payment</span>
+        <span>Account</span>
+        <span>Human support</span>
+      </div>`;
+  }
+
+  const reply = `
+    <div class="chat-bubble system">
+      ${flow.status ? `<div class="chatbot-status-pill">${flow.status}</div>` : ""}
+      ${flow.reply.map(line => `<p>${line}</p>`).join("")}
+      ${flow.next ? `<em>${flow.next}</em>` : ""}
+    </div>`;
+  const pathCard = chatbotPathCard(flow);
+  const clarification = flow.clarification
+    ? `<div class="chatbot-clarify-options">${flow.clarification.map(item => `<button data-action="chatbot-scenario" data-scenario="${item.scenario}">${item.label}</button>`).join("")}</div>`
+    : "";
+  const caseCard = flow.caseCard
+    ? `<section class="chatbot-case-card">
+        <div class="case-label">Support case</div>
+        <strong>Ticket draft</strong>
+        <p>Topic: Driver support inquiry</p>
+        <textarea readonly>Describe the issue briefly. Attach order ID or screenshot if available.</textarea>
+        <button data-action="chatbot-case-submit">Submit ticket</button>
+      </section>`
+    : "";
+  return `
+    <div class="chat-bubble user">${flow.user}</div>
+    ${chatbotMetaCard(flow)}
+    ${reply}
+    ${pathCard}
+    ${clarification}
+    ${flow.intent && !flow.clarification && !flow.caseCard ? chatbotFeedbackRow() : ""}
+    ${caseCard}`;
+}
+
+function chatbotQuickActions(flow) {
+  const chips = flow.chips || chatbotFlows.welcome.chips;
+  return `
+    <div class="chatbot-chip-row">
+      ${chips.map(item => `<button data-action="chatbot-scenario" data-scenario="${item.scenario}">${item.label}</button>`).join("")}
+    </div>`;
+}
+
+function renderChatbotPage() {
+  const flow = chatbotFlows[state.chatbotScenario] || chatbotFlows.welcome;
+  return `
+    ${chatbotAppBar()}
+    <div class="content chatbot-page">
+      <section class="chatbot-hero-card">
         <div>
-          <strong>Driver Co-pilot</strong>
-          <span>Ask for route help, exception SOP, or delivery status guidance.</span>
+          <span>SPX Virtual Assistant</span>
+          <strong>Driver Support Chatbot</strong>
+          <p>Instant answers, tag detection and case handoff in one place.</p>
         </div>
       </section>
-      <section class="chatbot-panel">
-        <div class="chat-bubble system">How can I help with today's delivery route?</div>
-        <button data-action="delay">Check delay risk and transfer suggestion</button>
-        <button data-action="brief-detail">Review today's task brief</button>
-        <button data-action="open-order-detail" data-order="${orders[3].id}" data-scenario="home">Open hard-to-find address guidance</button>
+
+      <section class="chatbot-session-card">
+        <div class="chatbot-thread">
+          ${chatbotConversation(flow)}
+        </div>
       </section>
+
+      ${chatbotQuickActions(flow)}
+    </div>
+    <div class="chatbot-input-bar">
+      <span>Type a question about delivery, payment or account</span>
+      <button data-action="chatbot-scenario" data-scenario="pod">Send</button>
     </div>`;
+}
+
+const notifications = [
+  {
+    id: "redelivery",
+    title: "One order need redelivery",
+    preview: "Order ID005314767588 was moved back to To-do for redelivery.",
+    category: "Work, Delivery",
+    tab: "Work",
+    time: "17:30",
+    date: "2026-05-22 09:41",
+    unread: true,
+    body: "Order ID005314767588 was put on-hold during delivery. System rejected the proof and moved it back to To-do for redelivery.",
+    detailIntro: "Order to review",
+    tasks: [
+      { name: "Kampung Baru", id: "ID005314767588", address: "Kampung Baru, Road 3, blue gate near mini mart", orderId: orders[2].id, scenario: "home" }
+    ]
+  },
+  {
+    id: "pickup-disabled",
+    title: "Pickup Task Disabled (10)",
+    preview: "You have 10 pickup tasks were assigned to another driver.",
+    category: "Work, Pickup",
+    tab: "Work",
+    time: "16:32",
+    date: "2020-11-30 16:32",
+    unread: true,
+    body: "Your have 10 pickup tasks were assigned to another driver.",
+    detailIntro: "The following is the detailed task list",
+    tasks: [
+      {
+        name: "TAMAN SARI",
+        id: "PT 202105242Y080",
+        address: "Kontrakan H.yono Kp. Cijantra girang RT 05/03 desa.jatake kec.pagedangan..."
+      },
+      {
+        name: "PUP Name Test",
+        id: "PT 202105242Y081",
+        address: "Kontrakan H.yono Kp. Cijantra girang RT 05/03 desa.jatake"
+      },
+      {
+        name: "PUP Name Test",
+        id: "PT 202105242Y081",
+        address: "Kontrakan H.yono Kp. Cijantra girang RT"
+      }
+    ]
+  },
+  {
+    id: "basic-pay",
+    title: "Basic pay adjustment approved!",
+    preview: "Congrats! Your basic pay adjustment 18,000 IDR has been approved.",
+    category: "Compensation",
+    tab: "Compensation",
+    time: "11-21",
+    date: "2020-11-21 09:10",
+    unread: true,
+    body: "Congrats! Your basic pay adjustment has been approved.",
+    detailIntro: "Payment details",
+    tasks: [
+      { name: "Basic pay adjustment", id: "18,000 IDR", address: "The approved amount will be included in the next settlement cycle." }
+    ]
+  },
+  {
+    id: "heavy-rain",
+    title: "Important! Red alert for heavy rain! Please pay attention to safety",
+    preview: "This afternoon to tomorrow day, Bangkok area may have heavy rain.",
+    category: "Safety",
+    tab: "Announcement",
+    time: "19-11-21",
+    important: true,
+    date: "2020-11-19 14:20",
+    body: "Heavy rain is expected this afternoon through tomorrow. Please pay attention to road safety and follow hub guidance.",
+    detailIntro: "Safety reminder",
+    tasks: [
+      { name: "Driver safety", id: "Weather alert", address: "Avoid risky roads, keep packages dry, and contact hub support if route conditions are unsafe." }
+    ]
+  },
+  {
+    id: "new-activity",
+    title: "New activitie to win money!",
+    preview: "We are going to start a new activity from December. Join to earn rewards.",
+    category: "Incentive",
+    tab: "Announcement",
+    time: "19-11-19",
+    important: true,
+    date: "2020-11-19 09:00",
+    body: "A new incentive activity will start from December. Complete eligible tasks to win rewards.",
+    detailIntro: "Activity details",
+    tasks: [
+      { name: "Invite Rewards", id: "Campaign", address: "Invite qualified couriers and complete the required first delivery to earn extra bonuses." }
+    ]
+  }
+];
+
+function notificationTaskCard(task) {
+  const actionAttrs = task.orderId ? ` data-action="open-order-detail" data-order="${task.orderId}" data-scenario="${task.scenario || "home"}" role="button" tabindex="0"` : "";
+  return `
+    <section class="notification-task-card"${actionAttrs}>
+      <strong>${task.name}</strong>
+      <span>${task.id}</span>
+      <p>${task.address}</p>
+    </section>`;
 }
 
 function renderMessageCenterPage() {
   return `
-    ${appBar("Message Center", true)}
-    <div class="content message-center-page">
-      <section class="message-card unread">
-        <div>
-          <strong>Redelivery reminder</strong>
-          <span>One order needs redelivery. Please review before leaving the hub.</span>
-        </div>
-        <em>Now</em>
+    ${appBar("My Notification", true)}
+    <div class="content notification-page">
+      <div class="notification-tabs">
+        <button class="active">All</button>
+        <button>Work</button>
+        <button>Compensation</button>
+        <button>Announcement</button>
+      </div>
+      <div class="notification-list">
+        ${notifications.map(item => `
+          <section class="notification-list-item" data-action="notification-detail" data-notification="${item.id}" role="button" tabindex="0">
+            <div>
+              <div class="notification-title-row">
+                <strong>${item.title}</strong>
+                ${item.important ? `<span>Important</span>` : ""}
+              </div>
+              <p>${item.preview}</p>
+              <small>${item.category}</small>
+            </div>
+            <em>${item.time}</em>
+            ${item.unread ? `<i></i>` : ""}
+          </section>`).join("")}
+      </div>
+    </div>`;
+}
+
+function renderNotificationDetailPage() {
+  const notification = notifications.find(item => item.id === state.selectedNotificationId) || notifications[0];
+  return `
+    ${appBar("Notification Detail", true)}
+    <div class="content notification-detail-page">
+      <section class="notification-detail-head">
+        <h2>${notification.title}</h2>
+        <time>${notification.date}</time>
+        <p>${notification.body}</p>
+        <span>${notification.detailIntro}</span>
       </section>
-      <section class="message-card">
-        <div>
-          <strong>Invite Rewards</strong>
-          <span>Invite qualified couriers and earn extra bonuses.</span>
-        </div>
-        <em>1h ago</em>
-      </section>
-      <section class="message-card">
-        <div>
-          <strong>Learning Center</strong>
-          <span>New SOP tips for exception order handling are available.</span>
-        </div>
-        <em>Today</em>
-      </section>
+      <div class="notification-task-list">
+        ${notification.tasks.map(notificationTaskCard).join("")}
+      </div>
     </div>`;
 }
 
@@ -1239,7 +1611,7 @@ function renderTransferSuccessDialog() {
 }
 
 function renderComingSoonDialog() {
-  return `<div class="coming-soon-toast" style="top:${state.comingSoonTop}px">Coming soon</div>`;
+  return `<div class="coming-soon-toast" style="top:${state.comingSoonTop}px">${state.toastText || "Coming soon"}</div>`;
 }
 
 function renderTransferSheet() {
@@ -1377,6 +1749,7 @@ function render(options = {}) {
     scan: renderScanPage,
     chatbot: renderChatbotPage,
     "message-center": renderMessageCenterPage,
+    "notification-detail": renderNotificationDetailPage,
     "invite-rewards": renderInviteRewardsPage,
     "learning-center": renderLearningCenterPage,
     profile: renderProfilePage,
@@ -1401,6 +1774,7 @@ function render(options = {}) {
     bottomNav.classList.toggle("is-visible", showBottomNav);
   }
   app.classList.toggle("with-bottom-nav", showBottomNav);
+  app.classList.toggle("chatbot-screen", state.screen === "chatbot");
   app.classList.toggle("modal-open", Boolean(modalMarkup) && !state.showComingSoon);
   app.scrollTop = options.preserveScroll ? previousScrollTop : 0;
   syncNav();
@@ -1416,6 +1790,7 @@ function syncNav() {
     "order-detail": "todo",
     scan: state.activeScenario,
     "message-center": "home",
+    "notification-detail": "home",
     "invite-rewards": "home",
     "learning-center": "home",
     dialer: "todo",
@@ -1523,10 +1898,18 @@ document.querySelector(".phone-screen-wrapper").addEventListener("click", event 
         go(state.briefBackScreen || "todo");
         return;
       }
-      if (state.screen === "message-center") {
-        go("home");
+      if (state.screen === "chatbot") {
+        go(state.chatbotBackScreen || "home");
         return;
       }
+	      if (state.screen === "message-center") {
+	        go("home");
+	        return;
+	      }
+	      if (state.screen === "notification-detail") {
+	        go("message-center");
+	        return;
+	      }
       if (state.screen === "invite-rewards" || state.screen === "learning-center") {
         go("home");
         return;
@@ -1543,7 +1926,7 @@ document.querySelector(".phone-screen-wrapper").addEventListener("click", event 
         go("delay");
         return;
       }
-      const backTo = state.screen === "dialer" || state.screen === "sms" || state.screen === "nav-help" || state.screen === "scan" ? "order-detail" : state.screen === "improve-nav" ? "nav-help" : state.screen === "exception-orders" ? "home" : state.screen === "brief" || state.screen === "guidance" || state.screen === "order-detail" ? "todo" : state.screen === "sequence-delay" || state.screen === "pending-delivery" ? "delay" : "brief";
+	      const backTo = state.screen === "scan" ? (state.scanBackScreen || "home") : state.screen === "dialer" || state.screen === "sms" || state.screen === "nav-help" ? "order-detail" : state.screen === "improve-nav" ? "nav-help" : state.screen === "exception-orders" ? "home" : state.screen === "brief" || state.screen === "guidance" || state.screen === "order-detail" ? "todo" : state.screen === "sequence-delay" || state.screen === "pending-delivery" ? "delay" : "brief";
       go(backTo);
       return;
     }
@@ -1581,15 +1964,17 @@ document.querySelector(".phone-screen-wrapper").addEventListener("click", event 
       go("todo");
       return;
     }
-    if (action === "bottom-scan") {
-      state.showDrawer = false;
-      state.showComingSoon = false;
-      go("scan");
-      return;
-    }
+	    if (action === "bottom-scan") {
+	      state.showDrawer = false;
+	      state.showComingSoon = false;
+	      state.scanBackScreen = state.screen || "home";
+	      go("scan");
+	      return;
+	    }
     if (action === "bottom-chatbot") {
       state.showDrawer = false;
       state.showComingSoon = false;
+      state.chatbotBackScreen = state.screen && state.screen !== "chatbot" ? state.screen : "home";
       go("chatbot");
       return;
     }
@@ -1599,11 +1984,16 @@ document.querySelector(".phone-screen-wrapper").addEventListener("click", event 
       go("profile");
       return;
     }
-    if (action === "message-center") {
-      state.showComingSoon = false;
-      go("message-center");
-      return;
-    }
+	    if (action === "message-center") {
+	      state.showComingSoon = false;
+	      go("message-center");
+	      return;
+	    }
+	    if (action === "notification-detail") {
+	      state.selectedNotificationId = actionEl.dataset.notification || notifications[0].id;
+	      go("notification-detail");
+	      return;
+	    }
     if (action === "home-tab-jump") {
       state.showComingSoon = false;
       state.activeScenario = "todo";
@@ -1614,6 +2004,32 @@ document.querySelector(".phone-screen-wrapper").addEventListener("click", event 
     if (action === "select-delivery-tab") {
       state.deliveryTab = actionEl.dataset.tab || "To-do";
       render();
+      return;
+    }
+    if (action === "chatbot-scenario") {
+      state.chatbotScenario = actionEl.dataset.scenario || "welcome";
+      state.chatbotFeedback = null;
+      render({ preserveScroll: true });
+      return;
+    }
+    if (action === "chatbot-feedback") {
+      state.chatbotFeedback = actionEl.dataset.feedback || null;
+      render({ preserveScroll: true });
+      return;
+    }
+    if (action === "chatbot-case-submit") {
+      state.chatbotFeedback = "case";
+      state.toastText = "Support ticket submitted";
+      state.showComingSoon = true;
+      const modalRoot = document.getElementById("modal-root");
+      const rootRect = modalRoot?.getBoundingClientRect();
+      state.comingSoonTop = rootRect ? Math.round(rootRect.height * 0.52) : 360;
+      render({ preserveScroll: true });
+      window.clearTimeout(comingSoonTimer);
+      comingSoonTimer = window.setTimeout(() => {
+        state.showComingSoon = false;
+        render({ preserveScroll: true });
+      }, 2000);
       return;
     }
     if (action === "invite-rewards") {
@@ -1627,6 +2043,7 @@ document.querySelector(".phone-screen-wrapper").addEventListener("click", event 
       return;
     }
     if (action === "coming-soon") {
+      state.toastText = "Coming soon";
       const modalRoot = document.getElementById("modal-root");
       const rootRect = modalRoot?.getBoundingClientRect();
       const actionRect = actionEl.getBoundingClientRect();
@@ -1718,10 +2135,11 @@ document.querySelector(".phone-screen-wrapper").addEventListener("click", event 
       render({ preserveScroll: true });
       return;
     }
-    if (action === "update-delivery-status") {
-      go("scan");
-      return;
-    }
+	    if (action === "update-delivery-status") {
+	      state.scanBackScreen = "order-detail";
+	      go("scan");
+	      return;
+	    }
     if (action === "dial") {
       state.selectedContactPhone = actionEl.dataset.phone || (allOrders().find(item => item.id === state.selectedOrderId) || orders[0]).phone;
       go("dialer");
