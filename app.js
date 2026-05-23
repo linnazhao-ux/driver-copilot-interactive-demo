@@ -1,7 +1,7 @@
 const orders = [
   {
     id: "TH240052019881",
-    displayId: "ID005314767368",
+    displayId: "PH005314767368",
     buyer: "Nick Chan",
     phone: "6287772563080",
     address: "Jl. Letnan Jenderal S. Parman, Gradogol, 114370 Jakarta Cakung Satu",
@@ -16,16 +16,16 @@ const orders = [
     receiverRemark: "Phone call during office hour.",
     alternativePhone: "6287772563123",
     risk: "High fail delivery rate",
-    payment: "3,100 IDR",
-    cod: "3,000 IDR",
-    asf: "100 IDR",
+    payment: "3,100 PHP",
+    cod: "3,000 PHP",
+    asf: "100 PHP",
     hub: "KRAMAT JATI2",
     itemCount: 40,
     packageType: "Shops&Services"
   },
   {
     id: "TH240052019915",
-    displayId: "ID005314767421",
+    displayId: "PH005314767421",
     buyer: "Nick Chan",
     phone: "6287772563080",
     address: "No. 18 Jalan Setia, shop lot behind loading bay",
@@ -40,16 +40,16 @@ const orders = [
     receiverRemark: "Leave parcel at receptionist if receiver is not reachable.",
     alternativePhone: "6287772563123",
     risk: "Expedited order",
-    payment: "3,100 IDR",
-    cod: "3,000 IDR",
-    asf: "100 IDR",
+    payment: "3,100 PHP",
+    cod: "3,000 PHP",
+    asf: "100 PHP",
     hub: "KRAMAT JATI2",
     itemCount: 12,
     packageType: "Shops&Services"
   },
   {
     id: "TH240052019942",
-    displayId: "ID005314767588",
+    displayId: "PH005314767588",
     buyer: "Nur H.",
     phone: "6287772563081",
     address: "Kampung Baru, Road 3, blue gate near mini mart",
@@ -64,16 +64,16 @@ const orders = [
     receiverRemark: "Call before delivery.",
     alternativePhone: "6287772563123",
     risk: "Special delivery flow",
-    payment: "2,400 IDR",
-    cod: "2,300 IDR",
-    asf: "100 IDR",
+    payment: "2,400 PHP",
+    cod: "2,300 PHP",
+    asf: "100 PHP",
     hub: "KRAMAT JATI2",
     itemCount: 8,
     packageType: "Home"
   },
   {
     id: "TH240052019977",
-    displayId: "ID005314767602",
+    displayId: "PH005314767602",
     buyer: "Lim W.",
     phone: "6287772563082",
     address: "Factory Gate 2, South Entrance, security counter",
@@ -88,16 +88,16 @@ const orders = [
     receiverRemark: "Receiver will pick up at security counter.",
     alternativePhone: "6287772563123",
     risk: "Normal",
-    payment: "1,800 IDR",
-    cod: "1,700 IDR",
-    asf: "100 IDR",
+    payment: "1,800 PHP",
+    cod: "1,700 PHP",
+    asf: "100 PHP",
     hub: "KRAMAT JATI2",
     itemCount: 5,
     packageType: "NSS"
   },
   {
     id: "TH240052020031",
-    displayId: "ID005314767699",
+    displayId: "PH005314767699",
     buyer: "Rina A.",
     phone: "6287772563083",
     address: "Jl. Melati Raya No. 22, Tower B lobby, Jakarta Timur",
@@ -112,9 +112,9 @@ const orders = [
     receiverRemark: "Receiver is available before lunch.",
     alternativePhone: "6287772563124",
     risk: "Normal",
-    payment: "1,600 IDR",
-    cod: "1,500 IDR",
-    asf: "100 IDR",
+    payment: "1,600 PHP",
+    cod: "1,500 PHP",
+    asf: "100 PHP",
     hub: "KRAMAT JATI2",
     itemCount: 3,
     packageType: "Home"
@@ -130,7 +130,7 @@ const drivers = [
 const exceptionOrders = [
   {
     id: "EX240052020101",
-    displayId: "ID005314768101",
+    displayId: "PH005314768101",
     buyer: "Aditya R.",
     phone: "6287772563091",
     address: "Ruko Sentra Niaga Blok C12, Jakarta Timur",
@@ -145,9 +145,9 @@ const exceptionOrders = [
     receiverRemark: "Do not attempt delivery. Bring parcel back to hub.",
     alternativePhone: "6287772563191",
     risk: "Return to sender",
-    payment: "2,100 IDR",
-    cod: "2,000 IDR",
-    asf: "100 IDR",
+    payment: "2,100 PHP",
+    cod: "2,000 PHP",
+    asf: "100 PHP",
     hub: "KRAMAT JATI2",
     itemCount: 1,
     packageType: "Home",
@@ -156,7 +156,7 @@ const exceptionOrders = [
   },
   {
     id: "EX240052020118",
-    displayId: "ID005314768118",
+    displayId: "PH005314768118",
     buyer: "Dewi S.",
     phone: "6287772563092",
     address: "Cluster Anggrek 8, Guard Post North Gate",
@@ -171,9 +171,9 @@ const exceptionOrders = [
     receiverRemark: "Do not deliver today. Return parcel to hub custody.",
     alternativePhone: "6287772563192",
     risk: "Rescheduled by buyer",
-    payment: "0 IDR",
-    cod: "0 IDR",
-    asf: "0 IDR",
+    payment: "0 PHP",
+    cod: "0 PHP",
+    asf: "0 PHP",
     hub: "KRAMAT JATI2",
     itemCount: 1,
     packageType: "Home",
@@ -182,7 +182,7 @@ const exceptionOrders = [
   },
   {
     id: "EX240052020126",
-    displayId: "ID005314768126",
+    displayId: "PH005314768126",
     buyer: "Maya P.",
     phone: "6287772563093",
     address: "Jl. Kenanga Baru No. 7, warehouse reception",
@@ -197,9 +197,9 @@ const exceptionOrders = [
     receiverRemark: "Bring back to hub for relabeling.",
     alternativePhone: "6287772563193",
     risk: "Relabel required",
-    payment: "0 IDR",
-    cod: "0 IDR",
-    asf: "0 IDR",
+    payment: "0 PHP",
+    cod: "0 PHP",
+    asf: "0 PHP",
     hub: "KRAMAT JATI2",
     itemCount: 1,
     packageType: "NSS",
@@ -360,11 +360,11 @@ function briefStats() {
 }
 
 function phoneVerifiedDot(order) {
-  return order.displayId === "ID005314767368" ? '<span class="ok-dot">✓</span>' : "";
+  return order.displayId === "PH005314767368" ? '<span class="ok-dot">✓</span>' : "";
 }
 
 function failRateBadge(order, extraClass = "") {
-  if (order.displayId !== "ID005314767368") return "";
+  if (order.displayId !== "PH005314767368") return "";
   return `<div class="fail-rate-corner ${extraClass}"><strong>${order.failRate}</strong><span>Fail rate</span></div>`;
 }
 
@@ -373,7 +373,7 @@ function allOrders() {
 }
 
 function deliveredOrders() {
-  return orders.filter(order => order.displayId === "ID005314767699");
+  return orders.filter(order => order.displayId === "PH005314767699");
 }
 
 function orderCard(order, options = {}) {
@@ -464,7 +464,7 @@ function renderHomePage() {
             <button data-action="home-tab-jump" data-tab="Delivered"><strong>0</strong><span>Delivered</span></button>
             <button data-action="home-tab-jump" data-tab="To-do"><strong>5</strong><span>Pending</span><em>1 Urgent</em></button>
           </div>
-          <button class="summary-main summary-income"><strong>0 IDR</strong><span>Incoming</span></button>
+          <button class="summary-main summary-income"><strong>0 PHP</strong><span>Incoming</span></button>
         </div>
       </section>
 
@@ -627,11 +627,11 @@ function renderBriefDetail() {
 
 function renderOrderDetail() {
   const order = allOrders().find(item => item.id === state.selectedOrderId) || orders[0];
-  if (state.deliveryTab === "Delivered" && order.displayId === "ID005314767699") {
+  if (state.deliveryTab === "Delivered" && order.displayId === "PH005314767699") {
     return renderDeliveredOrderDetail(order);
   }
   const phoneDot = phoneVerifiedDot(order);
-  const detailTags = order.displayId === "ID005314767588"
+  const detailTags = order.displayId === "PH005314767588"
     ? [...new Set(["Redelivery", ...order.tags])]
     : order.tags;
   const exceptionBanner = order.category === "exception"
@@ -675,7 +675,7 @@ function renderOrderDetail() {
         <div class="tag-row">${detailTags.map(tagHtml).join("")}</div>
       </section>
 
-      ${order.displayId === "ID005314767602" ? `
+      ${order.displayId === "PH005314767602" ? `
         <div class="hard-find-entry" data-action="nav-help" role="button" tabindex="0">
           <span class="info-dot">i</span>
           <span>Hard to find this address?</span>
@@ -845,7 +845,7 @@ const chatbotFlows = {
     confidence: "88%",
     status: "FMS data retrieved",
     reply: [
-      "Your current COD collection for today's route is 0 IDR.",
+      "Your current COD collection for today's route is 0 PHP.",
       "No pending COD settlement is detected for this device session.",
       "If the amount looks wrong after route completion, create a payment support ticket."
     ],
@@ -1069,16 +1069,16 @@ const notifications = [
   {
     id: "redelivery",
     title: "One order need redelivery",
-    preview: "Order ID005314767588 was moved back to To-do for redelivery.",
+    preview: "Order PH005314767588 was moved back to To-do for redelivery.",
     category: "Work, Delivery",
     tab: "Work",
     time: "17:30",
     date: "2026-05-22 09:41",
     unread: true,
-    body: "Order ID005314767588 was put on-hold during delivery. System rejected the proof and moved it back to To-do for redelivery.",
+    body: "Order PH005314767588 was put on-hold during delivery. System rejected the proof and moved it back to To-do for redelivery.",
     detailIntro: "Order to review",
     tasks: [
-      { name: "Kampung Baru", id: "ID005314767588", address: "Kampung Baru, Road 3, blue gate near mini mart", orderId: orders[2].id, scenario: "home" }
+      { name: "Kampung Baru", id: "PH005314767588", address: "Kampung Baru, Road 3, blue gate near mini mart", orderId: orders[2].id, scenario: "home" }
     ]
   },
   {
@@ -1113,7 +1113,7 @@ const notifications = [
   {
     id: "basic-pay",
     title: "Basic pay adjustment approved!",
-    preview: "Congrats! Your basic pay adjustment 18,000 IDR has been approved.",
+    preview: "Congrats! Your basic pay adjustment 18,000 PHP has been approved.",
     category: "Compensation",
     tab: "Compensation",
     time: "11-21",
@@ -1122,7 +1122,7 @@ const notifications = [
     body: "Congrats! Your basic pay adjustment has been approved.",
     detailIntro: "Payment details",
     tasks: [
-      { name: "Basic pay adjustment", id: "18,000 IDR", address: "The approved amount will be included in the next settlement cycle." }
+      { name: "Basic pay adjustment", id: "18,000 PHP", address: "The approved amount will be included in the next settlement cycle." }
     ]
   },
   {
@@ -1250,21 +1250,6 @@ function renderLearningCenterPage() {
   return `
     ${appBar("Learning Center", true)}
     <div class="content learning-center-page">
-      <section class="learning-hero-card">
-        <div>
-          <strong>Today SOP Tips</strong>
-          <span>Recommended training for your current route risks.</span>
-        </div>
-        <b>3</b>
-      </section>
-      <section class="learning-progress-card">
-        <div class="learning-progress-head">
-          <strong>Route readiness</strong>
-          <span>2/3 completed</span>
-        </div>
-        <div class="learning-progress-bar"><span></span></div>
-        <p>Finish the redelivery SOP before starting delivery for at-risk orders.</p>
-      </section>
       <section class="learning-list">
         ${lessons.map(item => `
           <article class="learning-lesson-card">
@@ -1511,9 +1496,9 @@ function renderDelay() {
   };
   progress.total = orders.length;
   progress.percent = Math.round((progress.delivered / progress.total) * 100);
-  const hiddenInOperationGuidance = new Set(["ID005314767602", "ID005314767699"]);
+  const hiddenInOperationGuidance = new Set(["PH005314767602", "PH005314767699"]);
   const guidanceOrders = orders.filter(order => !hiddenInOperationGuidance.has(order.displayId)).map(order => {
-    if (order.displayId === "ID005314767588") {
+    if (order.displayId === "PH005314767588") {
       return {
         ...order,
         tags: [...new Set(["Redelivery", ...order.tags])],
@@ -1865,7 +1850,7 @@ document.getElementById("scenario-nav").addEventListener("click", event => {
   state.activeScenario = item.dataset.screen;
   state.deliveryTab = "To-do";
   if (item.dataset.screen === "guidance") {
-    const hardToFindOrder = orders.find(order => order.displayId === "ID005314767602") || orders[3];
+    const hardToFindOrder = orders.find(order => order.displayId === "PH005314767602") || orders[3];
     state.selectedOrderId = hardToFindOrder.id;
     state.paymentExpanded = true;
     state.itemExpanded = true;

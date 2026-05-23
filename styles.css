@@ -7284,3 +7284,67 @@ body {
   width: 24px;
   height: 24px;
 }
+
+/* Cursor semantics */
+.phone-screen-wrapper,
+.app-container,
+.app-screen,
+.app-content,
+.demo-panel,
+.blueprint-dialog,
+.blueprint-image-wrap {
+  cursor: default;
+}
+
+.app-container button,
+.app-container button *,
+.demo-panel button,
+.demo-panel button * {
+  cursor: default;
+}
+
+.app-container [data-action],
+.app-container [data-action] *,
+.app-container [data-screen],
+.app-container [data-screen] *,
+.app-container [data-order][role="button"],
+.app-container [data-order][role="button"] *,
+.app-container [data-stop],
+.app-container [data-stop] *,
+.app-container [data-driver],
+.app-container [data-driver] *,
+.app-container [role="button"],
+.app-container [role="button"] *,
+.demo-panel [data-screen],
+.demo-panel [data-screen] *,
+#blueprint-trigger,
+#blueprint-trigger *,
+#blueprint-backdrop,
+#blueprint-close {
+  cursor: pointer;
+}
+
+.app-container button:disabled,
+.app-container button:disabled *,
+.app-container [disabled],
+.app-container [disabled] *,
+.app-container [aria-disabled="true"],
+.app-container [aria-disabled="true"] *,
+.app-container .is-disabled,
+.app-container .is-disabled * {
+  cursor: default;
+}
+
+.app-container input,
+.app-container textarea,
+.app-container [contenteditable="true"] {
+  cursor: text;
+}
+
+.app-container .nav-map-viewport {
+  cursor: grab;
+}
+
+.app-container .nav-map-viewport.dragging {
+  cursor: grabbing;
+}

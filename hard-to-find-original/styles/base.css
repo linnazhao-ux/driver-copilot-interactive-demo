@@ -716,3 +716,67 @@ body {
   from { transform: translateX(-60px); opacity: 0; }
   to   { transform: translateX(0);     opacity: 1; }
 }
+
+/* Cursor semantics */
+body,
+.app-root,
+.phone-screen-wrapper,
+.screen,
+.page {
+  cursor: default;
+}
+
+[onclick],
+[onclick] *,
+[data-case-id],
+[data-case-id] *,
+[data-page],
+[data-page] *,
+[data-track],
+[data-track] *,
+#p1-back,
+#p2-back,
+#p3-back,
+#htf-banner,
+#payment-toggle,
+#improve-nav-btn,
+#p2-img-modal-bd,
+#p2-img-modal-close,
+#p2-img-modal-prev,
+#p2-img-modal-next,
+#add-photo-slot,
+#submit-btn,
+#sim-pick-loc-btn,
+#sim-ride-btn,
+#sim-ride-stop-btn,
+#sim-walk-btn,
+#sim-stop-btn,
+#sim-reset-btn,
+.car-img-wrap,
+.car-dot,
+.photo-remove-btn {
+  cursor: pointer;
+}
+
+button:disabled,
+button:disabled *,
+[disabled],
+[disabled] * {
+  cursor: default;
+}
+
+input:not([type]),
+input[type="text"],
+input[type="search"],
+input[type="tel"],
+input[type="email"],
+input[type="number"],
+textarea {
+  cursor: text;
+}
+
+input[type="checkbox"],
+input[type="range"],
+input[type="radio"] {
+  cursor: pointer;
+}
