@@ -235,9 +235,20 @@ const state = {
   improvePhotos: [],
   improveDescription: "",
   chatbotScenario: "welcome",
+  chatbotDraft: "",
+  chatbotCustomFlow: null,
   chatbotFeedback: null,
+  chatbotContext: null,
+  learningFocus: null,
+  homeSearchQuery: "",
+  homeSearchMessage: "",
+  searchQuery: "",
+  sequenceDriverType: "new",
+  sequenceGroupingActive: false,
+  sequenceGroupOpen: false,
   chatbotBackScreen: "home",
   selectedNotificationId: "redelivery",
+  selectedTransferOrderId: orders[0].id,
   scanBackScreen: "home"
 };
 
@@ -250,6 +261,7 @@ const icons = {
   clipboard: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6l1 2h3v16H5V5h3z"/><path d="M9 9h6"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>',
   settings: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.7 1.7 0 00.34 1.88l.04.04a2 2 0 01-2.83 2.83l-.04-.04A1.7 1.7 0 0015 19.4a1.7 1.7 0 00-1 .6 1.7 1.7 0 00-.4 1.08V21a2 2 0 01-4 0v-.08A1.7 1.7 0 008.6 19.4a1.7 1.7 0 00-1.88.34l-.04.04a2 2 0 01-2.83-2.83l.04-.04A1.7 1.7 0 004.6 15a1.7 1.7 0 00-.6-1 1.7 1.7 0 00-1.08-.4H3a2 2 0 010-4h.08A1.7 1.7 0 004.6 8.6a1.7 1.7 0 00-.34-1.88l-.04-.04a2 2 0 012.83-2.83l.04.04A1.7 1.7 0 009 4.6c.35 0 .7-.1 1-.3a1.7 1.7 0 00.6-1.22V3a2 2 0 014 0v.08c0 .48.2.92.6 1.22.3.2.65.3 1 .3a1.7 1.7 0 001.88-.34l.04-.04a2 2 0 012.83 2.83l-.04.04A1.7 1.7 0 0019.4 9c0 .35.1.7.3 1 .3.4.74.6 1.22.6H21a2 2 0 010 4h-.08a1.7 1.7 0 00-1.52.4z"/></svg>',
   ticket: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7a2 2 0 012-2h12a2 2 0 012 2v3a2 2 0 000 4v3a2 2 0 01-2 2H6a2 2 0 01-2-2v-3a2 2 0 000-4z"/><path d="M9 9h6"/><path d="M9 15h4"/></svg>',
+  transfer: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h11"/><path d="M12 4l3 3-3 3"/><path d="M20 17H9"/><path d="M12 14l-3 3 3 3"/><rect x="4" y="12" width="5" height="5" rx="1"/><rect x="15" y="7" width="5" height="5" rx="1"/></svg>',
   qr: '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h7v7H3V3zm2 2v3h3V5H5zm9-2h7v7h-7V3zm2 2v3h3V5h-3zM3 14h7v7H3v-7zm2 2v3h3v-3H5zm11-2h2v2h-2v-2zm3 0h2v3h-2v-3zm-5 4h2v3h-2v-3zm3 1h4v2h-4v-2z"/></svg>',
   scan: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M7 3H4a1 1 0 00-1 1v3"/><path d="M17 3h3a1 1 0 011 1v3"/><path d="M7 21H4a1 1 0 01-1-1v-3"/><path d="M17 21h3a1 1 0 001-1v-3"/><path d="M7 12h10"/></svg>',
   pickup: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 7h12l-1 14H7L6 7z"/><path d="M9 7a3 3 0 016 0"/><path d="M12 11v6"/><path d="M9 14h6"/></svg>',
@@ -293,7 +305,17 @@ function bottomNavActive() {
 }
 
 function shouldShowBottomNav() {
-  return ["home", "todo", "delay", "profile"].includes(state.screen);
+  return ["home", "todo", "delay", "sequence-new", "sequence-experienced", "profile"].includes(state.screen);
+}
+
+function shouldShowFloatingChatbot() {
+  const excluded = ["home", "todo", "delay", "sequence-new", "sequence-experienced", "profile", "chatbot", "scan", "dialer", "sms"];
+  return !excluded.includes(state.screen);
+}
+
+function floatingChatbotButton() {
+  if (!shouldShowFloatingChatbot()) return "";
+  return `<button class="floating-chatbot-entry" data-action="floating-chatbot" aria-label="Ask assistant">${icons.bot}</button>`;
 }
 
 function chatbotAppBar() {
@@ -334,12 +356,14 @@ function tabs(active = "To-do", counts = { todo: orders.length, delivered: 15, o
     </div>`;
 }
 
-function sortRow() {
+function sortRow(options = {}) {
+  const groupingClass = options.groupingActive ? "active recommend-sort" : "";
+  const groupingAttrs = options.groupingAction ? ' data-action="sequence-grouping"' : "";
   return `
     <div class="sort-row">
       <button>District ▾</button>
       <button>Urgent SLA</button>
-      <button>Grouping</button>
+      <button class="${groupingClass}"${groupingAttrs}>Grouping</button>
       <button>Default ▾</button>
     </div>`;
 }
@@ -374,6 +398,234 @@ function allOrders() {
 
 function deliveredOrders() {
   return orders.filter(order => order.displayId === "PH005314767699");
+}
+
+function normalizeSearchText(value) {
+  return String(value || "").trim().toLowerCase().replace(/\s+/g, "");
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function canonicalSearchQuery(query) {
+  return normalizeSearchText(query).replace(/^id/, "ph");
+}
+
+function searchOrders(query) {
+  const normalized = normalizeSearchText(query).replace(/^id/, "ph");
+  if (!normalized) return [];
+  return allOrders().filter(order => {
+    const candidates = [
+      order.displayId,
+      order.id,
+      order.phone,
+      order.alternativePhone,
+      order.buyer,
+      order.address
+    ].map(normalizeSearchText);
+    return candidates.some(value => value.includes(normalized));
+  });
+}
+
+function highlightMatchText(text, query) {
+  const raw = String(text || "");
+  const normalized = canonicalSearchQuery(query);
+  if (!normalized) return escapeHtml(raw);
+  const visibleNeedle = String(query || "").trim().replace(/^id/i, "PH");
+  const needle = visibleNeedle || query;
+  const parts = raw.split(new RegExp(`(${escapeRegExp(needle)})`, "ig"));
+  return parts.map(part => part.toLowerCase() === needle.toLowerCase()
+    ? `<mark>${escapeHtml(part)}</mark>`
+    : escapeHtml(part)
+  ).join("");
+}
+
+function submitHomeSearch() {
+  const query = state.homeSearchQuery.trim();
+  if (!query) {
+    state.homeSearchMessage = "";
+    render({ preserveScroll: true });
+    return;
+  }
+  state.homeSearchMessage = "";
+  state.searchQuery = query;
+  state.homeSearchQuery = query;
+  go("search-results");
+}
+
+function resolveChatbotScenario(query) {
+  const text = normalizeSearchText(query);
+  if (!text) return null;
+  const includesAny = words => words.some(word => text.includes(word));
+  if (includesAny(["pod", "proof", "photo", "picture", "upload", "deliveryproof"])) return "pod";
+  if (includesAny(["cod", "payment", "pay", "settlement", "money", "income", "php"])) return "payment";
+  if (includesAny(["otp", "verificationcode"])) return "loginOtp";
+  if (includesAny(["newdevice", "devicechange", "changephone"])) return "loginDevice";
+  if (includesAny(["suspend", "suspended", "blocked"])) return "suspended";
+  if (includesAny(["login", "account", "password"])) return "login";
+  if (includesAny(["human", "support", "ticket", "agent", "case"])) return "human";
+  if (includesAny(["twoissue", "twoissues", "multiple", "several"])) return "multi";
+  return null;
+}
+
+function submitChatbotQuestion() {
+  const question = state.chatbotDraft.trim();
+  if (!question) return;
+  const scenario = resolveChatbotScenario(question);
+  state.chatbotFeedback = null;
+  state.chatbotDraft = "";
+  if (scenario) {
+    state.chatbotScenario = scenario;
+    state.chatbotCustomFlow = null;
+  } else {
+    state.chatbotScenario = "custom";
+    state.chatbotCustomFlow = {
+      user: question,
+      status: "No answer available",
+      hideMeta: true,
+      reply: ["I can't answer your question yet."]
+    };
+  }
+  render({ preserveScroll: true });
+}
+
+function setChatbotEntry({ scenario = "welcome", context = null, backScreen = state.screen || "home", customFlow = null } = {}) {
+  state.chatbotScenario = scenario;
+  state.chatbotCustomFlow = customFlow;
+  state.chatbotContext = context;
+  state.chatbotDraft = "";
+  state.chatbotFeedback = null;
+  state.chatbotBackScreen = backScreen;
+  go("chatbot");
+}
+
+function orderContext(order) {
+  const tags = order.displayId === "PH005314767588"
+    ? [...new Set(["Redelivery", ...order.tags])]
+    : order.tags;
+  return {
+    title: `${order.displayId} · ${order.buyer}`,
+    detail: `Tags: ${tags.join(", ") || "Normal"}`
+  };
+}
+
+function redeliveryContext() {
+  return {
+    title: "PH005314767588 · Redelivery required",
+    detail: "Triggered by notification: on-hold proof was rejected."
+  };
+}
+
+function monthlyPodContext() {
+  return {
+    title: "Monthly Report · POD/POOH pass 85%",
+    detail: "Below quality target. Improve proof quality to protect rewards."
+  };
+}
+
+function genericContext(title, detail) {
+  return { title, detail };
+}
+
+function enterContextualChatbot() {
+  if (state.screen === "order-detail") {
+    const order = allOrders().find(item => item.id === state.selectedOrderId) || orders[0];
+    setChatbotEntry({ scenario: "orderAssist", context: orderContext(order), backScreen: "order-detail" });
+    return;
+  }
+  if (state.screen === "notification-detail" && state.selectedNotificationId === "redelivery") {
+    setChatbotEntry({ scenario: "redeliveryNotification", context: redeliveryContext(), backScreen: "notification-detail" });
+    return;
+  }
+  if (state.screen === "monthly-report") {
+    setChatbotEntry({ scenario: "podPoohImprove", context: monthlyPodContext(), backScreen: "monthly-report" });
+    return;
+  }
+  if (state.screen === "nav-help" || state.screen === "improve-nav") {
+    const order = allOrders().find(item => item.id === state.selectedOrderId) || orders[3];
+    setChatbotEntry({
+      scenario: "orderAssist",
+      context: genericContext(`${order.displayId} · Address Guidance`, "Hard-to-find address guidance is open for this stop."),
+      backScreen: state.screen
+    });
+    return;
+  }
+  if (state.screen === "learning-center") {
+    setChatbotEntry({
+      scenario: state.learningFocus === "pod-pooh" ? "podPoohImprove" : "welcome",
+      context: genericContext("Learning Center · SOP guidance", "Use this training list to improve route readiness."),
+      backScreen: "learning-center"
+    });
+    return;
+  }
+  if (state.screen === "message-center") {
+    setChatbotEntry({
+      scenario: "welcome",
+      context: genericContext("Notification Center", "Ask about driver messages, work notices or next actions."),
+      backScreen: "message-center"
+    });
+    return;
+  }
+  if (state.screen === "brief") {
+    setChatbotEntry({
+      scenario: "welcome",
+      context: genericContext("Task Brief · Special order review", "Today's route has special orders that need attention."),
+      backScreen: "brief"
+    });
+    return;
+  }
+  if (state.screen === "pending-delivery") {
+    setChatbotEntry({
+      scenario: "welcome",
+      context: genericContext("Pending Delivery · Urgent SLA", "Review pending orders and transfer risk before SLA is missed."),
+      backScreen: "pending-delivery"
+    });
+    return;
+  }
+  if (state.screen === "exception-orders") {
+    setChatbotEntry({
+      scenario: "welcome",
+      context: genericContext("Exception Orders · Bring back to hub", "These parcels do not need delivery and should return to hub."),
+      backScreen: "exception-orders"
+    });
+    return;
+  }
+  if (state.screen === "transfer-center") {
+    setChatbotEntry({
+      scenario: "welcome",
+      context: genericContext("Transfer Center · Parcel handover", "Review incoming and outgoing parcel transfer tasks."),
+      backScreen: "transfer-center"
+    });
+    return;
+  }
+  if (state.screen === "transfer-detail") {
+    const order = allOrders().find(item => item.id === state.selectedTransferOrderId) || orders[0];
+    setChatbotEntry({
+      scenario: "orderAssist",
+      context: genericContext(`${order.displayId} · Parcel transfer`, `Buyer: ${order.buyer}. Check transfer status before scanning.`),
+      backScreen: "transfer-detail"
+    });
+    return;
+  }
+  if (state.screen === "search-results") {
+    setChatbotEntry({
+      scenario: "welcome",
+      context: genericContext(`Search · ${state.searchQuery || "Order lookup"}`, "Ask for help finding or reviewing an order."),
+      backScreen: "search-results"
+    });
+    return;
+  }
+  setChatbotEntry({ scenario: "welcome", context: null, backScreen: state.screen || "home" });
 }
 
 function orderCard(order, options = {}) {
@@ -428,6 +680,22 @@ function deliveredOrderCard(order) {
     </section>`;
 }
 
+function searchResultCard(order, query) {
+  const tags = order.tags.map(tagHtml).join("");
+  return `
+    <section class="search-result-card" data-order="${order.id}" role="button" tabindex="0">
+      <div class="search-result-id">
+        <span>${highlightMatchText(order.displayId, query)}</span>
+        <span class="copy-icon">□</span>
+      </div>
+      <div class="search-result-body">
+        <h3><span class="pin-dot">${icons.pin}</span>${escapeHtml(order.address)}</h3>
+        <p>Receiver · ${escapeHtml(order.buyer)}</p>
+        ${tags ? `<div class="tag-row">${tags}</div>` : ""}
+      </div>
+    </section>`;
+}
+
 function briefCard({ compact = false } = {}) {
   const stats = briefStats();
   return `
@@ -454,7 +722,7 @@ function renderHomePage() {
       <section class="home-dashboard-head">
         <div class="home-search-row">
           <span class="home-weather">20°C</span>
-          <button class="home-search-pill">${icons.search}<span>Search order by order number or phone number</span></button>
+          <label class="home-search-pill">${icons.search}<input class="home-search-input" type="text" value="${escapeHtml(state.homeSearchQuery)}" placeholder="Search order by order number or phone number" /></label>
           <button class="home-head-icon" data-action="message-center" aria-label="Message center">${icons.bell}</button>
           <button class="home-head-icon home-scan-btn" data-action="bottom-scan" aria-label="Scan parcel">${icons.scan}</button>
         </div>
@@ -478,8 +746,8 @@ function renderHomePage() {
       <section class="home-tool-grid">
         <button data-action="brief-detail"><span class="tool-icon red">${icons.clipboard}</span><strong>Today Task</strong></button>
         <button data-action="exception-orders"><span class="tool-icon gold">${icons.ticket}</span><strong>Exception Order</strong></button>
-        <button data-action="coming-soon"><span class="tool-icon green">${icons.clipboard}</span><strong>Monthly Report</strong></button>
-        <button data-action="coming-soon"><span class="tool-icon more">•••</span><strong>More</strong></button>
+        <button data-action="monthly-report"><span class="tool-icon green">${icons.clipboard}</span><strong>Monthly Report</strong></button>
+        <button data-action="transfer-center"><span class="tool-icon transfer">${icons.transfer}</span><strong>Transfer Center</strong></button>
       </section>
 
       <section class="home-banner-carousel">
@@ -513,6 +781,25 @@ function renderHomePage() {
     </div>`;
 }
 
+function renderSearchResultsPage() {
+  const query = state.searchQuery.trim();
+  const results = searchOrders(query);
+  return `
+    <div class="search-page">
+      <div class="search-topbar">
+        <button class="search-back-btn" data-action="back" aria-label="Back">${icons.back}</button>
+        <label class="search-field">
+          <input class="search-page-input" type="text" value="${escapeHtml(state.searchQuery)}" placeholder="Search order" />
+        </label>
+        <button class="home-head-icon search-head-icon" data-action="message-center" aria-label="Message center">${icons.bell}</button>
+        <button class="home-head-icon home-scan-btn search-head-icon" data-action="bottom-scan" aria-label="Scan parcel">${icons.scan}</button>
+      </div>
+      ${results.length
+        ? `<div class="search-result-list">${results.map(order => searchResultCard(order, query)).join("")}</div>`
+        : `<div class="search-empty-state">No related orders yet</div>`}
+    </div>`;
+}
+
 function renderTodo() {
   const activeTab = state.deliveryTab || "To-do";
   const counts = { todo: 5, delivered: 0, onHold: 0 };
@@ -532,15 +819,194 @@ function renderTodo() {
         <div class="empty-tab-state">No on-hold orders</div>
       </div>`;
   }
+  if (state.sequenceGroupingActive) {
+    return `
+      ${appBar()}
+      ${tabs(activeTab, counts)}
+      ${sortRow({ groupingActive: true, groupingAction: true })}
+      ${renderSequenceGroupedList("experienced")}`;
+  }
   return `
     ${appBar()}
     ${tabs(activeTab, counts)}
-    ${sortRow()}
+    ${sortRow({ groupingActive: false, groupingAction: true })}
     <div class="content">
       ${briefCard()}
       <div class="group-header">To-do orders</div>
       ${orders.map(order => orderCard(order)).join("")}
     </div>`;
+}
+
+function sequenceGroupCard(driverType = state.sequenceDriverType) {
+  const specialCount = orders.filter(order => order.category === "special").length;
+  const arrow = state.sequenceGroupOpen ? "▾" : "▸";
+  return `
+    <section class="sequence-group-card" data-action="open-sequence-group" role="button" tabindex="0">
+      <div class="sequence-group-main">
+        <span class="sequence-folder">${arrow} 📁</span>
+        <div>
+          <strong>1. KRAMAT JATI2 Delivery Group</strong>
+          <small>${orders.length} orders · ${specialCount} special · 1 normal</small>
+        </div>
+      </div>
+      <span class="sequence-group-chip">${driverType === "new" ? "Suggested sequence" : "Special first"}</span>
+      <button aria-label="Open group">${icons.more}</button>
+    </section>`;
+}
+
+function sequenceReason(order) {
+  if (order.specialTypes.includes("highFail")) return "Contact buyer in advance";
+  if (order.specialTypes.includes("expedited")) return "Prioritize urgent SLA";
+  if (order.tags.includes("Hard- find Address")) return "Use address guidance before arrival";
+  if (order.displayId === "PH005314767588") return "Redelivery SOP required";
+  return "Follow normal delivery flow";
+}
+
+function newDriverSequenceOrders() {
+  const byId = id => orders.find(order => order.displayId === id);
+  return [
+    byId("PH005314767421"),
+    byId("PH005314767602"),
+    byId("PH005314767368"),
+    byId("PH005314767588"),
+    byId("PH005314767699")
+  ].filter(Boolean);
+}
+
+function sequenceOrderCard(order, index, options = {}) {
+  const isNumbered = options.numbered !== false;
+  const guidance = order.tags.includes("Hard- find Address")
+    ? `<button class="sequence-guidance-link" data-action="open-hard-guidance" data-order="${order.id}">Address Guidance ›</button>`
+    : "";
+  const phoneDot = phoneVerifiedDot(order);
+  return `
+    <section class="sequence-order-card" data-order="${order.id}" role="button" tabindex="0">
+      <div class="sequence-order-rank ${isNumbered ? "" : "attention"}">${isNumbered ? index + 1 : "!"}</div>
+      <div class="sequence-order-body">
+        <div class="sequence-order-id">${order.displayId}<span class="copy-icon">□</span></div>
+        <h3><span class="pin-dot">${icons.pin}</span>${order.address}</h3>
+        <div class="sequence-order-meta">
+          <span>${sequenceReason(order)}</span>
+          <em>${order.buyer}</em>
+        </div>
+        <div class="tag-row">${order.tags.map(tagHtml).join("")}${guidance}</div>
+      </div>
+      <div class="sequence-order-actions">
+        <button class="round-action" data-action="contact">${icons.phone}${phoneDot}</button>
+        <button class="round-action" data-action="contact">${icons.msg}</button>
+      </div>
+    </section>`;
+}
+
+function sequenceStopLabel(order) {
+  const labels = {
+    PH005314767421: "Nick Chan",
+    PH005314767602: "Service Point A",
+    PH005314767368: "Nick Chan",
+    PH005314767588: "Locker A",
+    PH005314767699: "Rina A."
+  };
+  return labels[order.displayId] || order.buyer;
+}
+
+function newDriverStopCard(order, index) {
+  const tag = order.tags.includes("Hard- find Address")
+    ? "Address Guidance"
+    : order.tags.includes("NSS")
+      ? "NSS"
+      : order.tags.includes("Urgent")
+        ? "Urgent"
+        : order.packageType === "Home"
+          ? "Home"
+          : "SP";
+  const phoneDot = phoneVerifiedDot(order);
+  return `
+    <section class="new-driver-stop-card" data-order="${order.id}" role="button" tabindex="0">
+      <div class="new-driver-stop-head">
+        <span class="new-driver-stop-rank">${index + 1}</span>
+        <span>${sequenceStopLabel(order)}</span>
+        ${index === 0 ? `<em>${order.displayId}</em>` : ""}
+      </div>
+      <div class="new-driver-stop-body">
+        <div>
+          <h3><span class="pin-dot">${icons.pin}</span>${order.address}</h3>
+          <p>${order.itemCount} Orders/TOs</p>
+          <span class="tag">${tag}</span>
+        </div>
+        <div class="new-driver-stop-actions">
+          <button class="round-action" data-action="contact">${icons.phone}${phoneDot}</button>
+          <button class="round-action" data-action="contact">${icons.msg}</button>
+        </div>
+      </div>
+    </section>`;
+}
+
+function sequenceNumberedOrderCard(order, index) {
+  return `
+    <div class="sequence-numbered-order">
+      <div class="sequence-number-row">
+        <span>${index + 1}</span>
+        <em>${sequenceStopLabel(order)}</em>
+      </div>
+      ${orderCard(order)}
+    </div>`;
+}
+
+function renderSequenceGroupedList(driverType = state.sequenceDriverType) {
+  return `
+    <div class="content sequence-page">
+      <div class="sequence-group-toolbar">
+        <span>Grouped result</span>
+        <strong>1 route group</strong>
+      </div>
+      ${sequenceGroupCard(driverType)}
+      ${state.sequenceGroupOpen ? renderInlineSequenceOrders(driverType) : ""}
+    </div>`;
+}
+
+function renderInlineSequenceOrders(driverType = state.sequenceDriverType) {
+  return driverType === "new" ? renderNewDriverSequenceDetail() : renderExperiencedSequenceDetail();
+}
+
+function renderNewDriverSequenceDetail() {
+  const sorted = newDriverSequenceOrders();
+  return `
+    <div class="special-list-title">Recommended sequence <span>${sorted.length}</span></div>
+    ${sorted.map((order, index) => sequenceNumberedOrderCard(order, index)).join("")}`;
+}
+
+function renderExperiencedSequenceDetail() {
+  const specialOrders = orders.filter(order => order.category === "special");
+  const normalOrders = orders.filter(order => order.category === "normal");
+  return `
+    <div class="special-list-title">Special order <span>${specialOrders.length}</span></div>
+    ${specialOrders.map(order => orderCard(order)).join("")}
+    <div class="special-list-title">Normal order <span>${normalOrders.length}</span></div>
+    ${normalOrders.map(order => orderCard(order)).join("")}`;
+}
+
+function renderSequenceCustomization(driverType = state.sequenceDriverType) {
+  const activeTab = state.deliveryTab || "To-do";
+  const counts = { todo: 5, delivered: 0, onHold: 0 };
+  if (activeTab !== "To-do") {
+    return `
+      ${appBar()}
+      ${tabs(activeTab, counts)}
+      <div class="content delivered-list-page">
+        <div class="empty-tab-state">${activeTab === "Delivered" ? "No delivered order" : "No on-hold orders"}</div>
+      </div>`;
+  }
+  return `
+    ${appBar()}
+    ${tabs(activeTab, counts)}
+    ${sortRow({ groupingActive: state.sequenceGroupingActive, groupingAction: true })}
+    ${state.sequenceGroupingActive
+      ? renderSequenceGroupedList(driverType)
+      : `<div class="content">
+          ${briefCard()}
+          <div class="group-header">To-do orders</div>
+          ${orders.map(order => orderCard(order)).join("")}
+        </div>`}`;
 }
 
 function renderExceptionOrders() {
@@ -791,7 +1257,7 @@ function renderScanPage() {
   return `
     <section class="scan-page">
       <div class="scan-photo">
-        <img src="assets/scan-camera.svg" alt="" />
+        <img src="assets/scan-camera.svg?v=20260524-input-interactions" alt="" />
       </div>
       <div class="scan-topbar">
         <button class="scan-top-btn" data-action="back">${icons.back}</button>
@@ -835,6 +1301,62 @@ const chatbotFlows = {
     chips: [
       { label: "Create support ticket", scenario: "human" },
       { label: "Ask about COD payment", scenario: "payment" },
+      { label: "Start new question", scenario: "welcome" }
+    ]
+  },
+  podPoohImprove: {
+    user: "How can I improve POD/POOH pass rate?",
+    intent: "Service quality",
+    tag: "pod_pooh_quality",
+    confidence: "85% metric detected",
+    status: "Monthly report insight",
+    hideMeta: true,
+    reply: [
+      "Your current POD/POOH pass rate is 85%, which may affect quality bonus and completion score.",
+      "Most failures come from unclear parcel photos, missing delivery-location evidence, or using on-hold proof when delivery proof is required.",
+      "Review the POD/POOH Quality SOP before the next route and keep both parcel and handover/location evidence clear."
+    ],
+    path: ["Monthly Report", "Tap POD/POOH pass 85%", "Review advice", "Open Learning Center", "Complete POD/POOH Quality SOP"],
+    chips: [
+      { label: "Open Learning Center", action: "learning-center", lesson: "pod-pooh" },
+      { label: "Review POD upload path", scenario: "pod" },
+      { label: "Start new question", scenario: "welcome" }
+    ]
+  },
+  redeliveryNotification: {
+    user: "Why was this order moved back to To-do?",
+    intent: "Delivery SOP",
+    tag: "redelivery_required",
+    confidence: "Notification context",
+    status: "Redelivery explanation",
+    hideMeta: true,
+    reply: [
+      "Order PH005314767588 was put on-hold during delivery, but the submitted proof did not pass backend review.",
+      "The system moved it back to To-do so you can redeliver and upload valid POD/POOH evidence.",
+      "Before retrying, contact the buyer and follow the redelivery SOP to avoid another rejected proof."
+    ],
+    path: ["Open order", "Contact buyer", "Redeliver parcel", "Upload clear POD/POOH", "Update delivery status"],
+    chips: [
+      { label: "Open order", action: "open-order-detail", order: "TH240052019942", scenarioName: "home" },
+      { label: "View Redelivery SOP", action: "learning-center", lesson: "redelivery" },
+      { label: "Start new question", scenario: "welcome" }
+    ]
+  },
+  orderAssist: {
+    user: "Help me with this order",
+    intent: "Order support",
+    tag: "contextual_order_assist",
+    confidence: "Order context",
+    status: "Context-aware support",
+    hideMeta: true,
+    reply: [
+      "I can use the current order ID, buyer and tags to recommend the next action.",
+      "Check the order tags first, then follow the matching SOP before updating delivery status.",
+      "If this is a hard-to-find or redelivery order, use the guided action before attempting final status update."
+    ],
+    chips: [
+      { label: "How do I upload POD?", scenario: "pod" },
+      { label: "Open Learning Center", action: "learning-center" },
       { label: "Start new question", scenario: "welcome" }
     ]
   },
@@ -1021,7 +1543,7 @@ function chatbotConversation(flow) {
       </section>`
     : "";
   return `
-    <div class="chat-bubble user">${flow.user}</div>
+    <div class="chat-bubble user">${escapeHtml(flow.user)}</div>
     ${chatbotMetaCard(flow)}
     ${reply}
     ${pathCard}
@@ -1032,14 +1554,23 @@ function chatbotConversation(flow) {
 
 function chatbotQuickActions(flow) {
   const chips = flow.chips || chatbotFlows.welcome.chips;
+  const attrs = item => {
+    if (item.action === "open-order-detail") {
+      return `data-action="open-order-detail" data-order="${item.order}" data-scenario="${item.scenarioName || "home"}"`;
+    }
+    if (item.action === "learning-center") {
+      return `data-action="learning-center"${item.lesson ? ` data-lesson="${item.lesson}"` : ""}`;
+    }
+    return `data-action="chatbot-scenario" data-scenario="${item.scenario || "welcome"}"`;
+  };
   return `
     <div class="chatbot-chip-row">
-      ${chips.map(item => `<button data-action="chatbot-scenario" data-scenario="${item.scenario}">${item.label}</button>`).join("")}
+      ${chips.map(item => `<button ${attrs(item)}>${item.label}</button>`).join("")}
     </div>`;
 }
 
 function renderChatbotPage() {
-  const flow = chatbotFlows[state.chatbotScenario] || chatbotFlows.welcome;
+  const flow = state.chatbotCustomFlow || chatbotFlows[state.chatbotScenario] || chatbotFlows.welcome;
   return `
     ${chatbotAppBar()}
     <div class="content chatbot-page">
@@ -1050,6 +1581,13 @@ function renderChatbotPage() {
           <p>Instant answers, tag detection and case handoff in one place.</p>
         </div>
       </section>
+      ${state.chatbotContext ? `
+        <section class="chatbot-context-card">
+          <span>Context</span>
+          <strong>${escapeHtml(state.chatbotContext.title)}</strong>
+          <p>${escapeHtml(state.chatbotContext.detail)}</p>
+        </section>
+      ` : ""}
 
       <section class="chatbot-session-card">
         <div class="chatbot-thread">
@@ -1060,8 +1598,8 @@ function renderChatbotPage() {
       ${chatbotQuickActions(flow)}
     </div>
     <div class="chatbot-input-bar">
-      <span>Type a question about delivery, payment or account</span>
-      <button data-action="chatbot-scenario" data-scenario="pod">Send</button>
+      <input class="chatbot-question-input" type="text" value="${escapeHtml(state.chatbotDraft)}" placeholder="Type a question about delivery, payment or account" />
+      <button data-action="chatbot-submit">Send</button>
     </div>`;
 }
 
@@ -1174,8 +1712,6 @@ function renderMessageCenterPage() {
       <div class="notification-tabs">
         <button class="active">All</button>
         <button>Work</button>
-        <button>Compensation</button>
-        <button>Announcement</button>
       </div>
       <div class="notification-list">
         ${notifications.map(item => `
@@ -1205,6 +1741,7 @@ function renderNotificationDetailPage() {
         <time>${notification.date}</time>
         <p>${notification.body}</p>
         <span>${notification.detailIntro}</span>
+        ${notification.id === "redelivery" ? `<button class="notification-assistant-cta" data-action="chatbot-from-notification">Ask assistant what happened</button>` : ""}
       </section>
       <div class="notification-task-list">
         ${notification.tasks.map(notificationTaskCard).join("")}
@@ -1226,6 +1763,15 @@ function renderInviteRewardsPage() {
 function renderLearningCenterPage() {
   const lessons = [
     {
+      id: "pod-pooh",
+      title: "POD/POOH Quality SOP",
+      label: "Priority",
+      meta: "5 min",
+      desc: "Take clear parcel, handover and location proof to improve POD/POOH pass rate and protect quality bonus.",
+      action: "Review"
+    },
+    {
+      id: "redelivery",
       title: "Redelivery SOP",
       label: "Required",
       meta: "3 min",
@@ -1233,6 +1779,7 @@ function renderLearningCenterPage() {
       action: "Review"
     },
     {
+      id: "address",
       title: "Hard-to-find Address",
       label: "New",
       meta: "4 min",
@@ -1240,6 +1787,7 @@ function renderLearningCenterPage() {
       action: "Start"
     },
     {
+      id: "exception",
       title: "Exception Order Handling",
       label: "Hub return",
       meta: "2 min",
@@ -1252,7 +1800,7 @@ function renderLearningCenterPage() {
     <div class="content learning-center-page">
       <section class="learning-list">
         ${lessons.map(item => `
-          <article class="learning-lesson-card">
+          <article class="learning-lesson-card ${state.learningFocus === item.id ? "featured" : ""}">
             <div class="lesson-icon">${icons.clipboard}</div>
             <div>
               <div class="lesson-title-row">
@@ -1267,6 +1815,228 @@ function renderLearningCenterPage() {
             </div>
           </article>`).join("")}
       </section>
+    </div>`;
+}
+
+function renderMonthlyReportPage() {
+  const incomeRows = [
+    ["Base delivery fee", "2,760 PHP"],
+    ["Quality bonus", "240 PHP"],
+    ["Deduction", "0 PHP"]
+  ];
+  const qualityRows = [
+    ["On-time delivery", "92%", 92, "", ""],
+    ["POD/POOH pass", "85%", 85, "warning", "chatbot-monthly-pod"],
+    ["Contact success", "95%", 95, "", ""]
+  ];
+  return `
+    ${appBar("Monthly Report", true)}
+    <div class="content monthly-report-page">
+      <section class="monthly-hero-card">
+        <div>
+          <span>May 2026 · KRAMAT JATI2</span>
+          <strong>3,000 PHP</strong>
+          <em>Estimated monthly salary</em>
+        </div>
+      </section>
+
+      <section class="monthly-summary-grid">
+        <div><strong>118</strong><span>Delivered</span></div>
+        <div><strong>96%</strong><span>Success rate</span></div>
+        <div><strong>6</strong><span>Exception orders</span></div>
+        <div><strong>2</strong><span>CS tickets</span></div>
+      </section>
+
+      <section class="monthly-card">
+        <div class="monthly-section-head">
+          <strong>Delivery trend</strong>
+          <span>Completed orders by week</span>
+        </div>
+        <div class="monthly-bar-chart">
+          <div style="--h:52%"><span></span><b>W1</b><em>24</em></div>
+          <div style="--h:68%"><span></span><b>W2</b><em>31</em></div>
+          <div style="--h:78%"><span></span><b>W3</b><em>36</em></div>
+          <div style="--h:60%"><span></span><b>W4</b><em>27</em></div>
+        </div>
+      </section>
+
+      <section class="monthly-card">
+        <div class="monthly-section-head">
+          <strong>Service quality</strong>
+          <span>Key metrics that affect rewards</span>
+        </div>
+        <div class="monthly-quality-list">
+          ${qualityRows.map(([label, value, width, tone, action]) => `
+            <div class="${action ? "actionable" : ""}"${action ? ` data-action="${action}" role="button" tabindex="0"` : ""}>
+              <p><span>${label}</span><strong class="${tone}">${value}</strong></p>
+              <i><b style="width:${width}%"></b></i>
+            </div>`).join("")}
+        </div>
+      </section>
+
+      <section class="monthly-card">
+        <div class="monthly-section-head">
+          <strong>Income breakdown</strong>
+          <span>Current month estimate</span>
+        </div>
+        <div class="monthly-income-list">
+          ${incomeRows.map(([label, value]) => `<p><span>${label}</span><strong>${value}</strong></p>`).join("")}
+        </div>
+      </section>
+
+      <section class="monthly-card monthly-action-card">
+        <div class="monthly-section-head">
+          <strong>Suggested focus</strong>
+          <span>Actions to improve next report</span>
+        </div>
+        <ul>
+          <li>Use Address Guidance for hard-to-find stops to protect completion rate.</li>
+          <li>Follow delivery and onhold SOP and keep POD/POOH photos clear to improve the current 98% pass rate.</li>
+        </ul>
+      </section>
+    </div>`;
+}
+
+function transferItems() {
+  return [
+    {
+      order: orders[0],
+      status: "Approved",
+      tone: "success",
+      direction: "Incoming",
+      from: "Jim",
+      to: "Kevin Jakarta",
+      reason: "Capacity support for high fail risk order",
+      time: "08:32",
+      note: "Operator approved the transfer. Scan parcel AWB to accept."
+    },
+    {
+      order: orders[3],
+      status: "New request",
+      tone: "urgent",
+      direction: "Incoming",
+      from: "Ravi",
+      to: "Kevin Jakarta",
+      reason: "Hard-to-find address support",
+      time: "08:25",
+      note: "New parcel transfer is assigned to you. Scan parcel to accept."
+    },
+    {
+      order: orders[2],
+      status: "Pending approval",
+      tone: "pending",
+      direction: "Outgoing",
+      from: "Kevin Jakarta",
+      to: "Jim",
+      reason: "Redelivery support request",
+      time: "08:10",
+      note: "Waiting for operator approval before handover."
+    }
+  ];
+}
+
+function selectedTransferItem() {
+  return transferItems().find(item => item.order.id === state.selectedTransferOrderId) || transferItems()[0];
+}
+
+function transferListCard(item) {
+  const order = item.order;
+  const tags = order.tags.filter(tag => ["COD", "NSS", "Hard- find Address", "Urgent"].includes(tag)).map(tagHtml).join("");
+  return `
+    <section class="transfer-list-card" data-action="transfer-detail" data-order="${order.id}" role="button" tabindex="0">
+      <div class="transfer-card-id">
+        <strong>${order.displayId}</strong>
+        <span class="transfer-status ${item.tone}">${item.status}</span>
+      </div>
+      <span class="transfer-hub">KRAMAT JATI2</span>
+      <h3>${order.address}</h3>
+      <div class="transfer-card-meta">
+        <span>${item.direction}</span>
+        <span>${item.from} to ${item.to}</span>
+        <em>${item.time}</em>
+      </div>
+      <div class="tag-row">${tags}</div>
+    </section>`;
+}
+
+function renderTransferCenterPage() {
+  const items = transferItems();
+  const incoming = items.filter(item => item.direction === "Incoming").length;
+  const needScan = items.filter(item => item.status !== "Pending approval").length;
+  return `
+    ${appBar("Transfer Center", true)}
+    <div class="content transfer-center-page">
+      <section class="transfer-alert-card">
+        <span>${icons.bell}</span>
+        <div>
+          <strong>Parcel transfer request approved</strong>
+          <p>Parcel transfer approved by operator, please check the parcel list.</p>
+        </div>
+      </section>
+
+      <section class="transfer-summary-card">
+        <div><strong>${incoming}</strong><span>Incoming</span></div>
+        <div><strong>${items.length - incoming}</strong><span>Outgoing</span></div>
+        <div><strong>${needScan}</strong><span>Need scan</span></div>
+      </section>
+
+      <div class="transfer-filter-row">
+        <button>All ▾</button>
+        <button>Default Sort ↕</button>
+      </div>
+
+      <section class="transfer-list">
+        ${items.map(transferListCard).join("")}
+      </section>
+
+      <button class="transfer-scan-fab" data-action="bottom-scan" aria-label="Scan parcel">${icons.scan}</button>
+    </div>`;
+}
+
+function renderTransferDetailPage() {
+  const item = selectedTransferItem();
+  const order = item.order;
+  const canAccept = item.status !== "Pending approval";
+  return `
+    ${appBar("Parcel Transfer", true)}
+    <div class="content transfer-detail-page">
+      <section class="transfer-detail-hero">
+        <div class="transfer-hero-icon">${icons.transfer}</div>
+        <div>
+          <span>${item.direction} transfer</span>
+          <strong>${item.status}</strong>
+          <p>${item.note}</p>
+        </div>
+      </section>
+
+      <section class="transfer-detail-card">
+        <div class="transfer-detail-id">
+          <strong>${order.displayId}</strong>
+          <span class="copy-icon">□</span>
+        </div>
+        <h2>${order.address}</h2>
+        <p>Receiver · ${order.buyer}</p>
+        <div class="tag-row">${order.tags.filter(tag => tag !== "Shops&Services").map(tagHtml).join("")}</div>
+      </section>
+
+      <section class="transfer-info-card">
+        <div><span>From</span><strong>${item.from}</strong></div>
+        <div><span>To</span><strong>${item.to}</strong></div>
+        <div><span>Reason</span><strong>${item.reason}</strong></div>
+        <div><span>Requested time</span><strong>${item.time}</strong></div>
+      </section>
+
+      <section class="transfer-sop-card">
+        <strong>Transfer SOP</strong>
+        <p>1. Scan parcel AWB and confirm the order ID.</p>
+        <p>2. Check parcel condition with the handover driver.</p>
+        <p>3. Accept transfer after parcel count is correct.</p>
+      </section>
+
+      <div class="transfer-detail-actions">
+        <button class="btn-secondary" data-action="bottom-scan">${icons.scan}<span>Scan parcel</span></button>
+        <button class="btn-primary" data-action="accept-transfer" ${canAccept ? "" : "disabled"}>Accept transfer</button>
+      </div>
     </div>`;
 }
 
@@ -1727,8 +2497,11 @@ function render(options = {}) {
   const previousScrollTop = app.scrollTop;
   const screens = {
     home: renderHomePage,
+    "search-results": renderSearchResultsPage,
     todo: renderTodo,
     "exception-orders": renderExceptionOrders,
+    "sequence-new": () => renderSequenceCustomization("new"),
+    "sequence-experienced": () => renderSequenceCustomization("experienced"),
     brief: renderBriefDetail,
     "order-detail": renderOrderDetail,
     scan: renderScanPage,
@@ -1737,6 +2510,9 @@ function render(options = {}) {
     "notification-detail": renderNotificationDetailPage,
     "invite-rewards": renderInviteRewardsPage,
     "learning-center": renderLearningCenterPage,
+    "monthly-report": renderMonthlyReportPage,
+    "transfer-center": renderTransferCenterPage,
+    "transfer-detail": renderTransferDetailPage,
     profile: renderProfilePage,
     dialer: renderDialer,
     sms: renderSms,
@@ -1752,7 +2528,7 @@ function render(options = {}) {
   };
   app.innerHTML = (screens[state.screen] || renderTodo)() + renderMapOverlay() + renderLightbox();
   const modalMarkup = renderActiveModal();
-  if (modalRoot) modalRoot.innerHTML = modalMarkup;
+  if (modalRoot) modalRoot.innerHTML = modalMarkup + floatingChatbotButton();
   const showBottomNav = shouldShowBottomNav();
   if (bottomNav) {
     bottomNav.innerHTML = showBottomNav ? renderBottomNav() : "";
@@ -1760,6 +2536,7 @@ function render(options = {}) {
   }
   app.classList.toggle("with-bottom-nav", showBottomNav);
   app.classList.toggle("chatbot-screen", state.screen === "chatbot");
+  app.classList.toggle("scan-screen", state.screen === "scan");
   app.classList.toggle("modal-open", Boolean(modalMarkup) && !state.showComingSoon);
   app.scrollTop = options.preserveScroll ? previousScrollTop : 0;
   syncNav();
@@ -1769,8 +2546,11 @@ function render(options = {}) {
 function syncNav() {
   const navMap = {
     home: "home",
+    "search-results": "home",
     todo: "todo",
     "exception-orders": "home",
+    "sequence-new": "sequence-new",
+    "sequence-experienced": "sequence-experienced",
     brief: "todo",
     "order-detail": "todo",
     scan: state.activeScenario,
@@ -1778,6 +2558,9 @@ function syncNav() {
     "notification-detail": "home",
     "invite-rewards": "home",
     "learning-center": "home",
+    "monthly-report": "home",
+    "transfer-center": "home",
+    "transfer-detail": "home",
     dialer: "todo",
     sms: "todo",
     "nav-help": "todo",
@@ -1849,6 +2632,16 @@ document.getElementById("scenario-nav").addEventListener("click", event => {
   state.transferMode = "single";
   state.activeScenario = item.dataset.screen;
   state.deliveryTab = "To-do";
+  if (item.dataset.screen === "todo") {
+    state.sequenceDriverType = "experienced";
+    state.sequenceGroupingActive = false;
+    state.sequenceGroupOpen = false;
+  }
+  if (item.dataset.screen === "sequence-new" || item.dataset.screen === "sequence-experienced") {
+    state.sequenceDriverType = item.dataset.screen === "sequence-new" ? "new" : "experienced";
+    state.sequenceGroupingActive = true;
+    state.sequenceGroupOpen = false;
+  }
   if (item.dataset.screen === "guidance") {
     const hardToFindOrder = orders.find(order => order.displayId === "PH005314767602") || orders[3];
     state.selectedOrderId = hardToFindOrder.id;
@@ -1879,6 +2672,11 @@ document.querySelector(".phone-screen-wrapper").addEventListener("click", event 
   if (actionEl) {
     const action = actionEl.dataset.action;
     if (action === "back") {
+      if (["todo", "sequence-new", "sequence-experienced"].includes(state.screen) && state.sequenceGroupOpen) {
+        state.sequenceGroupOpen = false;
+        render();
+        return;
+      }
       if (state.screen === "brief") {
         go(state.briefBackScreen || "todo");
         return;
@@ -1891,12 +2689,24 @@ document.querySelector(".phone-screen-wrapper").addEventListener("click", event 
 	        go("home");
 	        return;
 	      }
-	      if (state.screen === "notification-detail") {
-	        go("message-center");
-	        return;
-	      }
-      if (state.screen === "invite-rewards" || state.screen === "learning-center") {
+      if (state.screen === "notification-detail") {
+        go("message-center");
+        return;
+      }
+      if (state.screen === "search-results") {
         go("home");
+        return;
+      }
+      if (state.screen === "invite-rewards" || state.screen === "learning-center" || state.screen === "monthly-report" || state.screen === "transfer-center") {
+        go("home");
+        return;
+      }
+      if (state.screen === "transfer-detail") {
+        go("transfer-center");
+        return;
+      }
+      if (state.screen === "order-detail" && state.activeScenario === "search-results") {
+        go("search-results");
         return;
       }
       if (state.screen === "order-detail" && state.activeScenario === "exception-orders") {
@@ -1909,6 +2719,10 @@ document.querySelector(".phone-screen-wrapper").addEventListener("click", event 
       }
       if (state.screen === "order-detail" && state.activeScenario === "delay") {
         go("delay");
+        return;
+      }
+      if (state.screen === "order-detail" && (state.activeScenario === "sequence-new" || state.activeScenario === "sequence-experienced")) {
+        go(state.activeScenario);
         return;
       }
 	      const backTo = state.screen === "scan" ? (state.scanBackScreen || "home") : state.screen === "dialer" || state.screen === "sms" || state.screen === "nav-help" ? "order-detail" : state.screen === "improve-nav" ? "nav-help" : state.screen === "exception-orders" ? "home" : state.screen === "brief" || state.screen === "guidance" || state.screen === "order-detail" ? "todo" : state.screen === "sequence-delay" || state.screen === "pending-delivery" ? "delay" : "brief";
@@ -1946,6 +2760,9 @@ document.querySelector(".phone-screen-wrapper").addEventListener("click", event 
       state.showComingSoon = false;
       state.activeScenario = "todo";
       state.deliveryTab = "To-do";
+      state.sequenceDriverType = "experienced";
+      state.sequenceGroupingActive = false;
+      state.sequenceGroupOpen = false;
       go("todo");
       return;
     }
@@ -1959,8 +2776,11 @@ document.querySelector(".phone-screen-wrapper").addEventListener("click", event 
     if (action === "bottom-chatbot") {
       state.showDrawer = false;
       state.showComingSoon = false;
-      state.chatbotBackScreen = state.screen && state.screen !== "chatbot" ? state.screen : "home";
-      go("chatbot");
+      setChatbotEntry({
+        scenario: "welcome",
+        context: null,
+        backScreen: state.screen && state.screen !== "chatbot" ? state.screen : "home"
+      });
       return;
     }
     if (action === "bottom-profile") {
@@ -1983,6 +2803,9 @@ document.querySelector(".phone-screen-wrapper").addEventListener("click", event 
       state.showComingSoon = false;
       state.activeScenario = "todo";
       state.deliveryTab = actionEl.dataset.tab || "To-do";
+      state.sequenceDriverType = "experienced";
+      state.sequenceGroupingActive = false;
+      state.sequenceGroupOpen = false;
       go("todo");
       return;
     }
@@ -1991,10 +2814,53 @@ document.querySelector(".phone-screen-wrapper").addEventListener("click", event 
       render();
       return;
     }
+    if (action === "sequence-driver-type") {
+      state.sequenceDriverType = actionEl.dataset.sequenceDriver || "new";
+      render({ preserveScroll: true });
+      return;
+    }
+    if (action === "sequence-grouping") {
+      if (state.screen === "sequence-new") state.sequenceDriverType = "new";
+      if (state.screen === "sequence-experienced" || state.screen === "todo") state.sequenceDriverType = "experienced";
+      state.sequenceGroupingActive = true;
+      state.sequenceGroupOpen = true;
+      render();
+      return;
+    }
+    if (action === "open-sequence-group") {
+      state.sequenceGroupingActive = true;
+      state.sequenceGroupOpen = !state.sequenceGroupOpen;
+      render();
+      return;
+    }
     if (action === "chatbot-scenario") {
       state.chatbotScenario = actionEl.dataset.scenario || "welcome";
+      state.chatbotCustomFlow = null;
+      state.chatbotDraft = "";
       state.chatbotFeedback = null;
+      if (state.chatbotScenario === "welcome") state.chatbotContext = null;
       render({ preserveScroll: true });
+      return;
+    }
+    if (action === "chatbot-from-notification") {
+      setChatbotEntry({ scenario: "redeliveryNotification", context: redeliveryContext(), backScreen: "notification-detail" });
+      return;
+    }
+    if (action === "chatbot-from-order") {
+      const order = allOrders().find(item => item.id === actionEl.dataset.order) || allOrders().find(item => item.id === state.selectedOrderId) || orders[0];
+      setChatbotEntry({ scenario: "orderAssist", context: orderContext(order), backScreen: "order-detail" });
+      return;
+    }
+    if (action === "chatbot-monthly-pod") {
+      setChatbotEntry({ scenario: "podPoohImprove", context: monthlyPodContext(), backScreen: "monthly-report" });
+      return;
+    }
+    if (action === "floating-chatbot") {
+      enterContextualChatbot();
+      return;
+    }
+    if (action === "chatbot-submit") {
+      submitChatbotQuestion();
       return;
     }
     if (action === "chatbot-feedback") {
@@ -2024,7 +2890,38 @@ document.querySelector(".phone-screen-wrapper").addEventListener("click", event 
     }
     if (action === "learning-center") {
       state.showComingSoon = false;
+      state.learningFocus = actionEl.dataset.lesson || null;
       go("learning-center");
+      return;
+    }
+    if (action === "monthly-report") {
+      state.showComingSoon = false;
+      state.learningFocus = null;
+      go("monthly-report");
+      return;
+    }
+    if (action === "transfer-center") {
+      state.showComingSoon = false;
+      go("transfer-center");
+      return;
+    }
+    if (action === "transfer-detail") {
+      state.selectedTransferOrderId = actionEl.dataset.order || orders[0].id;
+      go("transfer-detail");
+      return;
+    }
+    if (action === "accept-transfer") {
+      state.toastText = "Parcel transfer accepted";
+      const modalRoot = document.getElementById("modal-root");
+      const rootRect = modalRoot?.getBoundingClientRect();
+      state.comingSoonTop = rootRect ? Math.round(rootRect.height * 0.52) : 360;
+      state.showComingSoon = true;
+      render({ preserveScroll: true });
+      window.clearTimeout(comingSoonTimer);
+      comingSoonTimer = window.setTimeout(() => {
+        state.showComingSoon = false;
+        render({ preserveScroll: true });
+      }, 2000);
       return;
     }
     if (action === "coming-soon") {
@@ -2195,12 +3092,32 @@ document.querySelector(".phone-screen-wrapper").addEventListener("click", event 
   const orderEl = event.target.closest("[data-order]");
   if (orderEl) {
     state.selectedOrderId = orderEl.dataset.order;
-    state.activeScenario = state.screen === "exception-orders" ? "exception-orders" : state.screen === "delay" || state.screen === "pending-delivery" ? "delay" : "todo";
+    state.activeScenario = state.screen === "search-results" ? "search-results" : state.screen === "exception-orders" ? "exception-orders" : state.screen === "sequence-new" || state.screen === "sequence-experienced" ? state.screen : state.screen === "delay" || state.screen === "pending-delivery" ? "delay" : "todo";
     go("order-detail");
   }
 });
 
 document.getElementById("app").addEventListener("input", event => {
+  const homeSearch = event.target.closest(".home-search-input");
+  if (homeSearch) {
+    state.homeSearchQuery = homeSearch.value;
+    if (state.homeSearchMessage) state.homeSearchMessage = "";
+    return;
+  }
+
+  const searchPageInput = event.target.closest(".search-page-input");
+  if (searchPageInput) {
+    state.searchQuery = searchPageInput.value;
+    state.homeSearchQuery = searchPageInput.value;
+    return;
+  }
+
+  const chatbotInput = event.target.closest(".chatbot-question-input");
+  if (chatbotInput) {
+    state.chatbotDraft = chatbotInput.value;
+    return;
+  }
+
   const target = event.target.closest("[data-action='nav-desc']");
   if (!target) return;
   state.improveDescription = target.value.slice(0, 100);
@@ -2208,6 +3125,24 @@ document.getElementById("app").addEventListener("input", event => {
   if (counter) {
     counter.textContent = `${state.improveDescription.length}/100`;
     counter.classList.toggle("warn", state.improveDescription.length > 80);
+  }
+});
+
+document.getElementById("app").addEventListener("keydown", event => {
+  if (event.key !== "Enter") return;
+  if (event.target.closest(".home-search-input")) {
+    event.preventDefault();
+    submitHomeSearch();
+    return;
+  }
+  if (event.target.closest(".search-page-input")) {
+    event.preventDefault();
+    render({ preserveScroll: false });
+    return;
+  }
+  if (event.target.closest(".chatbot-question-input")) {
+    event.preventDefault();
+    submitChatbotQuestion();
   }
 });
 
