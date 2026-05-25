@@ -7366,24 +7366,6 @@ body {
   margin-top: 8px;
 }
 
-.transfer-scan-fab {
-  width: 48px;
-  height: 48px;
-  display: grid;
-  place-items: center;
-  margin: 12px 0 0 auto;
-  border: 0;
-  border-radius: 50%;
-  color: #fff;
-  background: var(--primary);
-  box-shadow: 0 10px 24px rgba(238, 77, 45, .28);
-}
-
-.transfer-scan-fab svg {
-  width: 23px;
-  height: 23px;
-}
-
 .transfer-detail-page {
   padding-bottom: 22px;
 }

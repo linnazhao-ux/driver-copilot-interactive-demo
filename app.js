@@ -1988,8 +1988,6 @@ function renderTransferCenterPage() {
       <section class="transfer-list">
         ${items.map(transferListCard).join("")}
       </section>
-
-      <button class="transfer-scan-fab" data-action="bottom-scan" aria-label="Scan parcel">${icons.scan}</button>
     </div>`;
 }
 
