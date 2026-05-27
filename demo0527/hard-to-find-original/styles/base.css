@@ -1,0 +1,782 @@
+/* =========================================
+   CSS Variables
+   ========================================= */
+:root {
+  --primary: #E84436;
+  --primary-hover: #cc3a2e;
+  --link: #1A73E8;
+  --link-hover: #1557b0;
+  --text-dark: #1a1a1a;
+  --text-primary: #333333;
+  --text-secondary: #777777;
+  --text-light: #aaaaaa;
+  --banner-bg: #EEF0FF;
+  --border: #e8e8e8;
+  --tag-border: #cccccc;
+  --bg-white: #ffffff;
+  --bg-page: #f5f5f5;
+  --badge-red: #E84436;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}
+
+/* =========================================
+   Reset
+   ========================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: #0d0d1a;
+  min-height: 100vh;
+}
+
+/* =========================================
+   Demo Stage Layout
+   ========================================= */
+.demo-stage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  padding: 40px 20px;
+  background: linear-gradient(145deg, #0d0d1a 0%, #1a1040 40%, #0d1a2e 100%);
+  flex-wrap: nowrap;
+}
+
+/* =========================================
+   Side Panel
+   ========================================= */
+.demo-panel {
+  color: white;
+  max-width: 300px;
+  flex-shrink: 0;
+}
+
+.demo-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  opacity: 0.9;
+}
+
+.demo-title {
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.25;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, #ffffff 0%, #94c6ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.demo-desc {
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 32px;
+}
+
+.demo-nav {
+  margin-bottom: 28px;
+}
+
+.demo-nav-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 14px;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.04);
+}
+
+.step-item:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.15);
+}
+
+.step-item.active {
+  background: rgba(232, 68, 54, 0.2);
+  border-color: rgba(232, 68, 54, 0.45);
+}
+
+.step-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.step-item.active .step-dot {
+  background: var(--primary);
+}
+
+.step-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 3px;
+}
+
+.step-hint {
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.4;
+}
+
+.step-connector {
+  width: 2px;
+  height: 12px;
+  background: rgba(255,255,255,0.1);
+  margin-left: 29px;
+}
+
+.demo-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 10px;
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.5;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* =========================================
+   Phone Device
+   ========================================= */
+.phone-device {
+  position: relative;
+  width: 375px;
+  flex-shrink: 0;
+}
+
+/* Physical side buttons */
+.phone-btn {
+  position: absolute;
+  background: #2c2c2c;
+  border-radius: 3px;
+  z-index: 20;
+}
+
+.btn-vol-up   { left: -5px; top: 110px; width: 5px; height: 42px; }
+.btn-vol-down { left: -5px; top: 163px; width: 5px; height: 42px; }
+.btn-power    { right: -5px; top: 140px; width: 5px; height: 64px; }
+
+/* Screen wrapper (the dark bezel + white screen) */
+.phone-screen-wrapper {
+  background: #141414;
+  border-radius: 52px;
+  padding: 14px 12px 12px;
+  box-shadow:
+    inset 0 0 0 1px #3a3a3a,
+    0 0 0 1px #0a0a0a,
+    0 40px 100px rgba(0,0,0,0.75),
+    0 0 60px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Status bar */
+.status-bar {
+  background: #fff;
+  border-radius: 38px 38px 0 0;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 28px 0;
+  position: relative;
+  flex-shrink: 0;
+  z-index: 5;
+}
+
+.status-pill {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 126px;
+  height: 30px;
+  background: #111;
+  border-radius: 16px;
+  z-index: 10;
+}
+
+.status-time {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.3px;
+}
+
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #111;
+}
+
+.status-battery {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+}
+
+.battery-body {
+  width: 24px;
+  height: 12px;
+  border: 1.5px solid #111;
+  border-radius: 3px;
+  padding: 2px;
+}
+
+.battery-fill {
+  width: 70%;
+  height: 100%;
+  background: #2e7d32;
+  border-radius: 1px;
+}
+
+.battery-tip {
+  width: 3px;
+  height: 6px;
+  background: #111;
+  border-radius: 0 2px 2px 0;
+}
+
+/* Scrollable app area */
+.app-container {
+  background: var(--bg-page);
+  height: 700px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.app-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Home indicator */
+.home-indicator-bar {
+  background: #fff;
+  border-radius: 0 0 38px 38px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.home-indicator {
+  width: 130px;
+  height: 5px;
+  background: #1a1a1a;
+  border-radius: 3px;
+}
+
+/* =========================================
+   Shared: App Bar
+   ========================================= */
+.app-bar {
+  background: #fff;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px 0 4px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--border);
+}
+
+.app-bar-back {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--text-dark);
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.app-bar-back:active {
+  background: #f0f0f0;
+}
+
+.app-bar-title {
+  flex: 1;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-dark);
+  letter-spacing: -0.2px;
+}
+
+.app-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.app-bar-icon-btn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--text-dark);
+  transition: background 0.15s;
+}
+
+.app-bar-icon-btn:active {
+  background: #f0f0f0;
+}
+
+/* =========================================
+   Shared: Section helpers
+   ========================================= */
+.section-divider {
+  height: 8px;
+  background: var(--bg-page);
+  flex-shrink: 0;
+}
+
+.section-card {
+  background: #fff;
+  padding: 16px;
+}
+
+/* =========================================
+   Simulation Panel (left of phone)
+   ========================================= */
+.sim-panel {
+  width: 240px;
+  flex-shrink: 0;
+  color: #333;
+  font-family: var(--font);
+  order: -1;
+  background: #fff;
+  border-radius: 18px;
+  padding: 20px 18px;
+  max-height: 90vh;
+  overflow-y: auto;
+  scrollbar-width: none;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+}
+
+.sim-panel::-webkit-scrollbar { display: none; }
+
+.sim-panel-title {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  margin-bottom: 20px;
+  color: #1a1a1a;
+}
+
+.sim-section {
+  margin-bottom: 18px;
+}
+
+.sim-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #999;
+  margin-bottom: 8px;
+}
+
+/* ---- Compass Wheel ---- */
+.sim-compass-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+.sim-compass {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #f0f4ff 0%, #e8ecf4 60%, #dce2ee 100%);
+  border: 2px solid #c0c8d8;
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.06);
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.sim-compass::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  background: #888;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.sim-compass-ring {
+  position: absolute;
+  inset: 0;
+}
+
+.sim-compass-ring span {
+  position: absolute;
+  font-size: 12px;
+  font-weight: 800;
+  color: #666;
+}
+
+.sim-compass-n { top: 6px; left: 50%; transform: translateX(-50%); color: #E84436 !important; }
+.sim-compass-e { right: 8px; top: 50%; transform: translateY(-50%); }
+.sim-compass-s { bottom: 6px; left: 50%; transform: translateX(-50%); }
+.sim-compass-w { left: 8px; top: 50%; transform: translateY(-50%); }
+
+.sim-compass-needle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 60px;
+  margin-left: -2px;
+  margin-top: -60px;
+  transform-origin: 2px 60px;
+  background: linear-gradient(to top, #999 50%, #E84436 50%);
+  border-radius: 2px;
+  pointer-events: none;
+  transition: transform 0.08s ease-out;
+}
+
+.sim-compass-knob {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  margin-top: -8px;
+  background: #1A73E8;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  transform-origin: 8px 8px;
+  transform: translateY(-64px);
+  pointer-events: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  transition: transform 0.08s ease-out;
+}
+
+.sim-heading-value {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+  color: #1a1a1a;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Sim Buttons ---- */
+.sim-btn {
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: var(--font);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  transition: all 0.15s;
+}
+
+.sim-btn:active { opacity: 0.85; transform: scale(0.98); }
+.sim-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.sim-btn-primary {
+  background: var(--link);
+  color: #fff;
+}
+
+.sim-btn-primary.picking {
+  background: #c0392b;
+}
+
+.sim-btn-ride {
+  background: #1A73E8;
+  color: #fff;
+}
+
+.sim-btn-walk {
+  background: #4CAF50;
+  color: #fff;
+}
+
+.sim-btn-stop {
+  background: #E84436;
+  color: #fff;
+}
+
+.sim-btn-reset {
+  background: #f0f0f0;
+  color: #555;
+  border: 1px solid #ddd;
+  margin-top: 4px;
+  margin-bottom: 10px;
+}
+
+.sim-btn-reset:hover {
+  background: #e4e4e4;
+}
+
+.sim-coords {
+  font-size: 11.5px;
+  color: #777;
+  margin-top: 6px;
+  font-variant-numeric: tabular-nums;
+  word-break: break-all;
+}
+
+.sim-speed-row {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.sim-section-label + .sim-speed-row {
+  margin-top: 4px;
+}
+
+.sim-speed-label {
+  font-size: 11.5px;
+  color: #555;
+  font-weight: 600;
+}
+
+.sim-speed-range {
+  width: 100%;
+  min-width: 0;
+  accent-color: #1A73E8;
+  height: 6px;
+}
+
+.sim-speed-val {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #333;
+  font-variant-numeric: tabular-nums;
+  min-width: 3.2em;
+  text-align: right;
+}
+
+.sim-speed-hint {
+  font-size: 10px;
+  color: #999;
+  margin-top: 4px;
+  line-height: 1.35;
+}
+
+.sim-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #444;
+  user-select: none;
+}
+
+.sim-toggle-row input {
+  width: 16px;
+  height: 16px;
+  accent-color: #1A73E8;
+  flex-shrink: 0;
+}
+
+.sim-toggle-label {
+  line-height: 1.35;
+}
+
+.sim-walk-info, .sim-ride-info {
+  font-size: 11.5px;
+  color: #777;
+  margin-top: 6px;
+  min-height: 16px;
+}
+
+/* ---- Status Card ---- */
+.sim-status-card {
+  background: #f7f8fa;
+  border: 1px solid #e0e3e8;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.sim-status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+}
+
+.sim-status-row + .sim-status-row {
+  border-top: 1px solid #eee;
+}
+
+.sim-status-key {
+  font-size: 11px;
+  color: #888;
+}
+
+.sim-status-val {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #333;
+  font-variant-numeric: tabular-nums;
+}
+
+.sim-status-val.val-ok { color: #2e7d32; }
+.sim-status-val.val-warn { color: #e65100; }
+.sim-status-val.val-danger { color: #c62828; }
+
+/* =========================================
+   Page Transitions
+   ========================================= */
+.page-enter {
+  animation: pageEnter 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.page-enter-back {
+  animation: pageEnterBack 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes pageEnter {
+  from { transform: translateX(60px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+@keyframes pageEnterBack {
+  from { transform: translateX(-60px); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+
+/* Cursor semantics */
+body,
+.app-root,
+.phone-screen-wrapper,
+.screen,
+.page {
+  cursor: default;
+}
+
+[onclick],
+[onclick] *,
+[data-case-id],
+[data-case-id] *,
+[data-page],
+[data-page] *,
+[data-track],
+[data-track] *,
+#p1-back,
+#p2-back,
+#p3-back,
+#htf-banner,
+#payment-toggle,
+#improve-nav-btn,
+#p2-img-modal-bd,
+#p2-img-modal-close,
+#p2-img-modal-prev,
+#p2-img-modal-next,
+#add-photo-slot,
+#submit-btn,
+#sim-pick-loc-btn,
+#sim-ride-btn,
+#sim-ride-stop-btn,
+#sim-walk-btn,
+#sim-stop-btn,
+#sim-reset-btn,
+.car-img-wrap,
+.car-dot,
+.photo-remove-btn {
+  cursor: pointer;
+}
+
+button:disabled,
+button:disabled *,
+[disabled],
+[disabled] * {
+  cursor: default;
+}
+
+input:not([type]),
+input[type="text"],
+input[type="search"],
+input[type="tel"],
+input[type="email"],
+input[type="number"],
+textarea {
+  cursor: text;
+}
+
+input[type="checkbox"],
+input[type="range"],
+input[type="radio"] {
+  cursor: pointer;
+}

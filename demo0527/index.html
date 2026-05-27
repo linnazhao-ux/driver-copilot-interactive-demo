@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>demo0527</title>
+  <link rel="stylesheet" href="styles.css?v=20260527-mode-switcher" />
+</head>
+<body>
+  <div class="demo-stage">
+    <div class="phone-device">
+      <div class="phone-btn btn-vol-up"></div>
+      <div class="phone-btn btn-vol-down"></div>
+      <div class="phone-btn btn-power"></div>
+      <div class="phone-screen-wrapper">
+        <div class="status-bar">
+          <span class="status-time">08:41</span>
+          <div class="status-pill"></div>
+          <div class="status-icons">
+            <span>5G</span>
+            <div class="battery"><span></span></div>
+          </div>
+        </div>
+        <main class="app-container" id="app"></main>
+        <nav class="driver-bottom-nav" id="bottom-nav" aria-label="Main navigation"></nav>
+        <div class="modal-root" id="modal-root"></div>
+        <div class="home-indicator-bar"><div class="home-indicator"></div></div>
+      </div>
+    </div>
+
+    <aside class="demo-panel">
+      <div class="demo-logo">
+        <span class="logo-mark">D</span>
+        <span>Driver Delivery</span>
+      </div>
+      <h1>Driver-Self-Management-Plan I<br />interactive Demo</h1>
+      <p>Delivery-mode list and detail flows restyled to match the current Driver App visual language.</p>
+      <button class="blueprint-entry" id="blueprint-trigger" type="button">
+        <strong>Driver Self-management Blueprint</strong>
+        <small>Open full driver self-management flow</small>
+      </button>
+      <nav class="scenario-nav" id="scenario-nav">
+        <button class="scenario-item active" data-screen="home">
+          <span>1</span>
+          <strong>Home Page</strong>
+          <small>Daily dashboard and task entry</small>
+        </button>
+        <button class="scenario-item" data-screen="todo">
+          <span>2</span>
+          <strong>Task Brief</strong>
+          <small>Briefing card and special order detail</small>
+        </button>
+        <button class="scenario-item" data-screen="delay">
+          <span>3</span>
+          <strong>Operation Guidance</strong>
+          <small>Delay alert, suggest transfer/redelivery</small>
+        </button>
+        <button class="scenario-item" data-screen="guidance">
+          <span>4</span>
+          <strong>Address guidance</strong>
+          <small>Hard-to-find navigation support</small>
+        </button>
+        <button class="scenario-item" data-screen="sequence-new">
+          <span>5</span>
+          <strong>New Driver Sequence</strong>
+          <small>Grouping creates suggested stop order</small>
+        </button>
+        <button class="scenario-item" data-screen="sequence-experienced">
+          <span>6</span>
+          <strong>Experienced Driver Sequence</strong>
+          <small>Grouping highlights special orders</small>
+        </button>
+      </nav>
+      <div class="demo-tip">Tap phone cards and red actions to move through each flow.</div>
+    </aside>
+  </div>
+  <div class="blueprint-modal" id="blueprint-modal" aria-hidden="true">
+    <button class="blueprint-backdrop" id="blueprint-backdrop" type="button" aria-label="Close blueprint"></button>
+    <section class="blueprint-dialog" role="dialog" aria-modal="true" aria-label="Driver Self-management Blueprint">
+      <div class="blueprint-dialog-head">
+        <strong>Driver Self-management Blueprint</strong>
+        <button id="blueprint-close" type="button" aria-label="Close blueprint">×</button>
+      </div>
+      <div class="blueprint-image-wrap">
+        <img src="assets/driver-app-flow.png" alt="Driver Self-management Blueprint" />
+      </div>
+    </section>
+  </div>
+  <script src="app.js?v=20260527-mode-switcher"></script>
+  <script>
+    (() => {
+      const modal = document.getElementById("blueprint-modal");
+      const trigger = document.getElementById("blueprint-trigger");
+      const closeButtons = [document.getElementById("blueprint-close"), document.getElementById("blueprint-backdrop")];
+      const openBlueprint = () => {
+        modal.classList.add("is-open");
+        modal.setAttribute("aria-hidden", "false");
+      };
+      const closeBlueprint = () => {
+        modal.classList.remove("is-open");
+        modal.setAttribute("aria-hidden", "true");
+      };
+      trigger.addEventListener("click", openBlueprint);
+      closeButtons.forEach(button => button.addEventListener("click", closeBlueprint));
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape") closeBlueprint();
+      });
+    })();
+  </script>
+</body>
+</html>

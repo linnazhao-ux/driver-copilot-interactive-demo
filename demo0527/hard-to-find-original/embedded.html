@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Navigation Help</title>
+  <link rel="stylesheet" href="styles/base.css" />
+  <link rel="stylesheet" href="styles/page2.css" />
+  <link rel="stylesheet" href="styles/page3.css" />
+  <link rel="stylesheet" href="styles/cursor.css?v=20260523-cursor-semantics" />
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--bg-page);
+    }
+
+    #app {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      background: var(--bg-page);
+      font-family: var(--font);
+    }
+
+    .app-bar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script src="scripts/data.js"></script>
+  <script src="scripts/page2.js"></script>
+  <script src="scripts/page3.js"></script>
+  <script>
+    window._gMapsReady = false;
+    window._gMapsReadyQueue = [];
+    function onGoogleMapsReady() {
+      window._gMapsReady = true;
+      (window._gMapsReadyQueue || []).forEach(fn => fn());
+      window._gMapsReadyQueue = [];
+    }
+
+    const embeddedParams = new URLSearchParams(window.location.search);
+    const initialCaseKey = embeddedParams.get('case') || 'nongchang';
+
+    const router = {
+      currentPage: null,
+      params: { caseKey: initialCaseKey },
+      history: [],
+      navigate(page, params = {}) {
+        if (this.currentPage) {
+          this.history.push({ page: this.currentPage, params: this.params });
+        }
+        this.currentPage = page;
+        this.params = { caseKey: initialCaseKey, ...params };
+        this.render('forward');
+      },
+      goBack() {
+        if (!this.history.length) {
+          window.parent.postMessage({ type: 'hard-find-back' }, '*');
+          return;
+        }
+        const previous = this.history.pop();
+        this.currentPage = previous.page;
+        this.params = previous.params;
+        this.render('back');
+      },
+      render() {
+        const app = document.getElementById('app');
+        document.getElementById('p2-img-modal')?.remove();
+        if (window._mapInstance && typeof window._mapInstance.remove === 'function') {
+          window._mapInstance.remove();
+        }
+        window._mapInstance = null;
+
+        if (this.currentPage === 'page3') {
+          app.innerHTML = renderPage3(this.params);
+          app.scrollTop = 0;
+          initPage3(this.params);
+          return;
+        }
+
+        app.innerHTML = renderPage2(this.params);
+        app.scrollTop = 0;
+        initPage2(this.params);
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      router.navigate(embeddedParams.get('page') || 'page2', { caseKey: initialCaseKey });
+    });
+  </script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHYO3vKxz--j0rxiXPyROLJekx0LPHAkY&libraries=geometry&callback=onGoogleMapsReady"
+    async defer>
+  </script>
+</body>
+</html>

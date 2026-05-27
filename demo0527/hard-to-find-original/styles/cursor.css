@@ -1,0 +1,113 @@
+body,
+.app-root,
+.phone-screen-wrapper,
+.screen,
+.page {
+  cursor: default;
+}
+
+button,
+button *,
+.app-bar-back,
+.app-bar-back *,
+.p1-back-btn,
+.p1-back-btn *,
+.app-bar-icon-btn,
+.app-bar-icon-btn *,
+.ol-bar-icon-btn,
+.ol-bar-icon-btn *,
+.ol-sort-btn,
+.ol-sort-btn *,
+.ol-map-btn,
+.ol-map-btn *,
+.ol-icon-btn,
+.ol-icon-btn *,
+.nav-icon-btn,
+.nav-icon-btn *,
+.contact-btns .icon-btn,
+.contact-btns .icon-btn *,
+.btn-primary:not(#submit-btn):not([onclick]),
+.btn-primary:not(#submit-btn):not([onclick]) *,
+.btn-secondary:not(#improve-nav-btn):not([onclick]),
+.btn-secondary:not(#improve-nav-btn):not([onclick]) * {
+  cursor: default;
+}
+
+[onclick],
+[onclick] *,
+[data-case-id],
+[data-case-id] *,
+[data-page],
+[data-page] *,
+[data-track],
+[data-track] *,
+#p1-back,
+#p1-back *,
+#p2-back,
+#p2-back *,
+#p3-back,
+#p3-back *,
+#htf-banner,
+#htf-banner *,
+#payment-toggle,
+#payment-toggle *,
+#improve-nav-btn,
+#improve-nav-btn *,
+#p2-img-modal-bd,
+#p2-img-modal-close,
+#p2-img-modal-close *,
+#p2-img-modal-prev,
+#p2-img-modal-prev *,
+#p2-img-modal-next,
+#p2-img-modal-next *,
+#add-photo-slot,
+#add-photo-slot *,
+#submit-btn,
+#submit-btn *,
+#sim-pick-loc-btn,
+#sim-pick-loc-btn *,
+#sim-ride-btn,
+#sim-ride-btn *,
+#sim-ride-stop-btn,
+#sim-ride-stop-btn *,
+#sim-walk-btn,
+#sim-walk-btn *,
+#sim-stop-btn,
+#sim-stop-btn *,
+#sim-reset-btn,
+#sim-reset-btn *,
+.sim-compass,
+.sim-compass *,
+.sim-toggle-row,
+.sim-toggle-row *,
+.car-img-wrap,
+.car-img-wrap *,
+.car-dot,
+.photo-remove-btn {
+  cursor: pointer;
+}
+
+input:not([type]),
+input[type="text"],
+input[type="search"],
+input[type="tel"],
+input[type="email"],
+input[type="number"],
+textarea {
+  cursor: text;
+}
+
+input[type="checkbox"],
+input[type="range"],
+input[type="radio"] {
+  cursor: pointer;
+}
+
+button:disabled,
+button:disabled *,
+[disabled],
+[disabled] *,
+[aria-disabled="true"],
+[aria-disabled="true"] * {
+  cursor: default;
+}

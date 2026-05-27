@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Anomaly Monitoring Push</title>
+  <style>
+    :root {
+      --orange: #ee4d2d;
+      --orange-dark: #d83f24;
+      --green: #24a66a;
+      --green-soft: #eaf8f0;
+      --amber: #d9921e;
+      --amber-soft: #fff5df;
+      --red: #e6483f;
+      --red-soft: #fff0ee;
+      --ink: #303244;
+      --muted: #858b9d;
+      --line: #e9e2ee;
+      --page: #f8f2fb;
+      --card: #fff;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(238,77,45,.28), transparent 32%),
+        linear-gradient(145deg, #190705 0%, #100608 58%, #090409 100%);
+      color: var(--ink);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button {
+      border: 0;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .demo {
+      width: 375px;
+    }
+
+    .demo-head {
+      margin-bottom: 12px;
+      color: #fff;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .title-row h1 {
+      font-size: 19px;
+      line-height: 1.18;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .reset {
+      height: 34px;
+      padding: 0 14px;
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: 999px;
+      color: #fff;
+      background: rgba(255,255,255,.11);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .profile-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 5px;
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 16px;
+      background: rgba(255,255,255,.1);
+      backdrop-filter: blur(16px);
+    }
+
+    .profile-tab {
+      height: 42px;
+      border-radius: 12px;
+      background: transparent;
+      color: rgba(255,255,255,.76);
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .profile-tab.active.new {
+      color: #fff;
+      background: linear-gradient(135deg, #45c887, var(--green));
+      box-shadow: 0 10px 22px rgba(36,166,106,.28);
+    }
+
+    .profile-tab.active.experienced {
+      color: #fff;
+      background: linear-gradient(135deg, #f8b64e, var(--amber));
+      box-shadow: 0 10px 22px rgba(217,146,30,.28);
+    }
+
+    .phone {
+      position: relative;
+      width: 375px;
+      height: 812px;
+      padding: 14px 12px 12px;
+      border-radius: 46px;
+      background: #101010;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.18), 0 24px 78px rgba(0,0,0,.5);
+    }
+
+    .screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      border-radius: 36px;
+      background: var(--page);
+    }
+
+    .notch {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      width: 118px;
+      height: 34px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: #111;
+      z-index: 3;
+    }
+
+    .status-bar {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      color: #111;
+      background: #fff;
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .battery {
+      position: relative;
+      width: 24px;
+      height: 12px;
+      border: 2px solid currentColor;
+      border-radius: 4px;
+    }
+
+    .battery::after {
+      content: "";
+      position: absolute;
+      right: -5px;
+      top: 3px;
+      width: 3px;
+      height: 5px;
+      border-radius: 2px;
+      background: currentColor;
+    }
+
+    .battery span {
+      display: block;
+      width: 13px;
+      height: 6px;
+      margin: 1px;
+      border-radius: 2px;
+      background: currentColor;
+    }
+
+    .app-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 76px;
+      padding: 0 22px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .mode-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 42px;
+      padding: 0 15px;
+      border-radius: 999px;
+      background: #fff0ee;
+      color: var(--orange);
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .head-icons {
+      display: flex;
+      gap: 16px;
+      color: var(--orange);
+    }
+
+    .head-icons svg,
+    .mode-pill svg {
+      width: 23px;
+      height: 23px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .tabs-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      height: 58px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .task-tab {
+      display: grid;
+      place-items: center;
+      color: #5f6478;
+      font-size: 16px;
+      font-weight: 800;
+      position: relative;
+    }
+
+    .task-tab.active {
+      color: var(--ink);
+    }
+
+    .task-tab.active::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 20px;
+      right: 20px;
+      height: 3px;
+      background: var(--orange);
+    }
+
+    .content {
+      height: calc(100% - 44px - 76px - 58px);
+      overflow-y: auto;
+      padding: 14px 14px 88px;
+    }
+
+    .monitor {
+      margin-bottom: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(36,166,106,.22);
+      background: #fff;
+      box-shadow: 0 6px 18px rgba(30,20,40,.05);
+      transition: border-color 250ms ease, box-shadow 250ms ease;
+    }
+
+    .monitor.alert {
+      border-color: rgba(230,72,63,.32);
+      box-shadow: 0 12px 30px rgba(230,72,63,.1);
+    }
+
+    .monitor-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 52px;
+      padding: 13px 14px;
+      color: #16804d;
+      background: var(--green-soft);
+      font-size: 14px;
+      font-weight: 900;
+      transition: color 250ms ease, background 250ms ease;
+    }
+
+    .monitor.alert .monitor-summary {
+      color: var(--red);
+      background: var(--red-soft);
+    }
+
+    .simulate {
+      margin-left: auto;
+      margin-right: 8px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--orange);
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .arrow {
+      width: 22px;
+      height: 22px;
+      display: grid;
+      place-items: center;
+      color: currentColor;
+      transition: transform 250ms ease;
+    }
+
+    .monitor.alert .arrow {
+      transform: rotate(180deg);
+    }
+
+    .monitor-detail {
+      max-height: 0;
+      overflow: hidden;
+      padding: 0 14px;
+      background: #fff;
+      transition: max-height 250ms ease, padding 250ms ease;
+    }
+
+    .monitor.alert .monitor-detail {
+      max-height: 210px;
+      padding: 14px;
+    }
+
+    .progress-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .progress-track {
+      height: 7px;
+      border-radius: 999px;
+      background: #f2e9f3;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 60%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #ff8a54, var(--red));
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      overflow: hidden;
+    }
+
+    .stat {
+      min-height: 54px;
+      padding: 10px 9px;
+      background: #fff;
+      border-right: 1px solid var(--line);
+    }
+
+    .stat:last-child {
+      border-right: 0;
+    }
+
+    .stat strong {
+      display: block;
+      color: var(--ink);
+      font-size: 18px;
+      line-height: 1;
+      font-weight: 900;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .stat.urgent strong {
+      color: var(--red);
+    }
+
+    .alert-card {
+      margin-bottom: 14px;
+      padding: 13px 13px 14px;
+      border-left: 3px solid var(--red);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 12px 30px rgba(36, 25, 45, .08);
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+      transition: opacity 250ms ease, transform 250ms ease, border-color 250ms ease;
+    }
+
+    .alert-card.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .alert-card.handled {
+      border-left-color: var(--green);
+    }
+
+    .handled-row {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 9px;
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .alert-card.handled .handled-row {
+      display: flex;
+    }
+
+    .alert-title {
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.35;
+      font-weight: 900;
+    }
+
+    .alert-sub {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    .alert-actions {
+      margin-top: 12px;
+    }
+
+    .primary-action {
+      width: 100%;
+      height: 44px;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--orange);
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .action-cell {
+      position: relative;
+      min-height: 46px;
+      border-radius: 8px;
+      border: 1px solid #dcd8e4;
+      background: #fff;
+      color: #555b70;
+      font-size: 12px;
+      line-height: 1.1;
+      font-weight: 900;
+    }
+
+    .action-cell.recommended {
+      border-color: var(--green);
+      background: var(--green);
+      color: #fff;
+    }
+
+    .ai-badge {
+      position: absolute;
+      top: -9px;
+      left: 7px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      color: var(--green);
+      background: #dff7ea;
+      font-size: 9px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .selected {
+      box-shadow: 0 0 0 3px rgba(36,166,106,.16);
+      transform: translateY(-1px);
+    }
+
+    .section-title {
+      margin: 8px 0 10px;
+      color: #5f6478;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .task-card {
+      position: relative;
+      margin-bottom: 10px;
+      padding: 12px 12px 13px;
+      border-radius: 9px;
+      border: 1px solid var(--line);
+      background: #fff;
+      box-shadow: 0 4px 14px rgba(30,20,40,.035);
+      transition: border-color 250ms ease, box-shadow 250ms ease;
+    }
+
+    .task-card.highlight {
+      border-left: 4px solid var(--red);
+      box-shadow: 0 10px 24px rgba(230,72,63,.08);
+    }
+
+    .task-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-bottom: 9px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .task-top strong {
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      height: 22px;
+      padding: 0 8px;
+      border-radius: 5px;
+      color: #fff;
+      background: var(--orange);
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .address {
+      margin-top: 11px;
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.38;
+      font-weight: 900;
+    }
+
+    .meta {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    .risk-meta {
+      color: var(--red);
+      font-weight: 900;
+    }
+
+    .inline-actions {
+      display: none;
+      grid-template-columns: 1.1fr 1fr 1fr;
+      gap: 7px;
+      margin-top: 11px;
+    }
+
+    .experienced-view .task-card.highlight .inline-actions {
+      display: grid;
+    }
+
+    .mini-action {
+      min-height: 34px;
+      border-radius: 8px;
+      border: 1px solid #ddd8e3;
+      background: #fff;
+      color: #596073;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .mini-action.green {
+      border-color: var(--green);
+      background: var(--green);
+      color: #fff;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      height: 72px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: center;
+      border-top: 1px solid var(--line);
+      border-radius: 0 0 34px 34px;
+      background: rgba(255,255,255,.96);
+      color: #8c91a3;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .nav-item {
+      display: grid;
+      place-items: center;
+      gap: 4px;
+    }
+
+    .nav-item.active {
+      color: var(--orange);
+    }
+
+    .nav-item svg {
+      width: 23px;
+      height: 23px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .home-indicator {
+      position: absolute;
+      bottom: 6px;
+      left: 50%;
+      width: 130px;
+      height: 5px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: #111;
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+  <section class="demo" aria-label="AI anomaly monitoring push prototype">
+    <header class="demo-head">
+      <div class="title-row">
+        <h1>AI Anomaly Monitoring Push</h1>
+        <button class="reset" id="resetBtn">Reset</button>
+      </div>
+      <nav class="profile-tabs" aria-label="Driver profile">
+        <button class="profile-tab active new" data-profile="new">New driver</button>
+        <button class="profile-tab" data-profile="experienced">Experienced driver</button>
+      </nav>
+    </header>
+
+    <div class="phone">
+      <div class="screen">
+        <div class="notch"></div>
+        <div class="status-bar">
+          <span>08:41</span>
+          <span></span>
+          <span style="display:flex;align-items:center;gap:8px;">5G <span class="battery"><span></span></span></span>
+        </div>
+        <div class="app-head">
+          <div class="mode-pill">
+            <svg viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5"/><path d="M12 12v9"/></svg>
+            Delivery
+          </div>
+          <div class="head-icons">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 7h18s-3 0-3-7"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          </div>
+        </div>
+        <div class="tabs-row">
+          <div class="task-tab active">To-do (5)</div>
+          <div class="task-tab">Delivered (3)</div>
+          <div class="task-tab">On-Hold (0)</div>
+        </div>
+        <main class="content" id="app"></main>
+        <nav class="bottom-nav">
+          <div class="nav-item"><svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg><span>Homepage</span></div>
+          <div class="nav-item active"><svg viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5"/><path d="M12 12v9"/></svg><span>To do</span></div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><rect x="7" y="8" width="10" height="10" rx="3"/><path d="M12 4v4"/><path d="M8 14h.01M16 14h.01"/></svg><span>Chatbot</span></div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.7-4 14.3-4 16 0"/></svg><span>Profile</span></div>
+        </nav>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const app = document.getElementById("app");
+    const resetBtn = document.getElementById("resetBtn");
+    const profileTabs = [...document.querySelectorAll(".profile-tab")];
+
+    const tasks = [
+      {
+        id: "PH001",
+        orderId: "PH005314767368",
+        address: "Jl. Letnan Jenderal S. Parman, Gradogol, 114370 Jakarta Cakung Satu",
+        buyer: "Nick Chan",
+        urgent: false,
+        delivered: true
+      },
+      {
+        id: "PH002",
+        orderId: "PH005314767421",
+        address: "No. 18 Jalan Setia, shop lot behind loading bay",
+        buyer: "Nick Chan",
+        urgent: true,
+        delivered: true
+      },
+      {
+        id: "PH003",
+        orderId: "PH005314767602",
+        address: "Factory Gate 2, South Entrance, security counter",
+        buyer: "Lim W.",
+        urgent: true,
+        delivered: false,
+        risk: "56% historical rejection rate",
+        attempt: "3rd attempt",
+        sequence: "current position #3"
+      },
+      {
+        id: "PH004",
+        orderId: "PH005314767588",
+        address: "Kampung Baru, Road 3, blue gate near mini mart",
+        buyer: "Nur H.",
+        urgent: false,
+        delivered: false
+      },
+      {
+        id: "PH005",
+        orderId: "PH005314767699",
+        address: "Jl. Melati Raya No. 22, Tower B lobby, Jakarta Timur",
+        buyer: "Rina A.",
+        urgent: false,
+        delivered: true
+      }
+    ];
+
+    const state = {
+      profile: "new",
+      anomaly: false,
+      handled: false,
+      selectedAction: ""
+    };
+
+    function setProfile(profile) {
+      state.profile = profile;
+      state.anomaly = false;
+      state.handled = false;
+      state.selectedAction = "";
+      profileTabs.forEach(tab => {
+        tab.classList.toggle("active", tab.dataset.profile === profile);
+        tab.classList.toggle("new", tab.dataset.profile === "new");
+        tab.classList.toggle("experienced", tab.dataset.profile === "experienced");
+      });
+      render();
+    }
+
+    function reset() {
+      setProfile(state.profile);
+    }
+
+    function triggerAnomaly() {
+      state.anomaly = true;
+      state.handled = false;
+      state.selectedAction = "";
+      render();
+    }
+
+    function handleAction(action) {
+      state.selectedAction = action;
+      state.handled = true;
+      render();
+      setTimeout(() => {
+        state.anomaly = false;
+        render();
+      }, 520);
+    }
+
+    function monitorBanner() {
+      const alert = state.anomaly && !state.handled;
+      return `
+        <section class="monitor ${alert ? "alert" : ""}">
+          <div class="monitor-summary">
+            <span>${alert ? "! Risk detected | route progress is off track" : "✓ 3/5 delivered | on track"}</span>
+            ${!alert ? `<button class="simulate" data-action="simulate">Simulate anomaly</button>` : ""}
+            <span class="arrow">⌃</span>
+          </div>
+          <div class="monitor-detail">
+            <div class="progress-head">
+              <span>Delivery progress</span>
+              <span>3/5 delivered</span>
+            </div>
+            <div class="progress-track"><div class="progress-fill"></div></div>
+            <div class="stat-grid">
+              <div class="stat"><strong>3</strong><span>Delivered</span></div>
+              <div class="stat"><strong>2</strong><span>Pending</span></div>
+              <div class="stat urgent"><strong>1</strong><span>Urgent</span></div>
+            </div>
+          </div>
+        </section>`;
+    }
+
+    function alertCard() {
+      const show = state.anomaly || state.handled;
+      const handledClass = state.handled ? "handled" : "";
+      if (state.profile === "new") {
+        return `
+          <section class="alert-card ${show ? "show" : ""} ${handledClass}">
+            <div class="handled-row">✓ Handled | route monitoring restored</div>
+            <div class="alert-title">PH003 must be completed before 14:00. Start now.</div>
+            <div class="alert-actions">
+              <button class="primary-action ${state.selectedAction === "navigate" ? "selected" : ""}" data-action="resolve" data-choice="navigate">Navigate now</button>
+            </div>
+          </section>`;
+      }
+
+      return `
+        <section class="alert-card ${show ? "show" : ""} ${handledClass}">
+          <div class="handled-row">✓ Handled | driver action recorded</div>
+          <div class="alert-title">PH003 is at risk: buyer has a 56% historical rejection rate, and this stop is currently #3.</div>
+          <div class="alert-sub">AI recommends calling ahead to reduce ineffective delivery attempts.</div>
+          <div class="alert-actions">
+            <div class="button-grid">
+              <button class="action-cell recommended ${state.selectedAction === "call" ? "selected" : ""}" data-action="resolve" data-choice="call">
+                <span class="ai-badge">AI recommended</span>
+                Call buyer
+              </button>
+              <button class="action-cell ${state.selectedAction === "transfer" ? "selected" : ""}" data-action="resolve" data-choice="transfer">Move to transfer</button>
+              <button class="action-cell ${state.selectedAction === "exception" ? "selected" : ""}" data-action="resolve" data-choice="exception">Mark exception</button>
+            </div>
+          </div>
+        </section>`;
+    }
+
+    function taskCard(task) {
+      const isRiskTask = task.id === "PH003" && state.anomaly;
+      const profileClass = state.profile === "experienced" ? "experienced-view" : "";
+      const extra = state.profile === "experienced" && task.id === "PH003"
+        ? `<div class="meta risk-meta">${task.risk} | ${task.attempt}</div>`
+        : "";
+      const normalMeta = state.profile === "new" && task.id === "PH003"
+        ? ""
+        : `<div class="meta">Buyer ${task.buyer}</div>`;
+      return `
+        <article class="task-card ${isRiskTask ? "highlight" : ""}">
+          <div class="task-top">
+            <strong>${task.id}</strong>
+            <span>${task.orderId}</span>
+          </div>
+          <div class="address">${task.address}</div>
+          ${normalMeta}
+          ${task.urgent ? `<div style="margin-top:8px;"><span class="badge">Urgent</span></div>` : ""}
+          ${extra}
+          <div class="inline-actions">
+            <button class="mini-action green" data-action="resolve" data-choice="call-inline">Call buyer</button>
+            <button class="mini-action" data-action="resolve" data-choice="transfer-inline">Transfer</button>
+            <button class="mini-action" data-action="resolve" data-choice="exception-inline">Exception</button>
+          </div>
+        </article>`;
+    }
+
+    function render() {
+      const profileClass = state.profile === "experienced" ? "experienced-view" : "new-view";
+      app.className = `content ${profileClass}`;
+      app.innerHTML = `
+        ${monitorBanner()}
+        ${alertCard()}
+        <div class="section-title">To-do orders</div>
+        ${tasks.filter(task => !task.delivered).map(taskCard).join("")}
+      `;
+    }
+
+    document.addEventListener("click", event => {
+      const profileTab = event.target.closest("[data-profile]");
+      if (profileTab) {
+        setProfile(profileTab.dataset.profile);
+        return;
+      }
+
+      const actionEl = event.target.closest("[data-action]");
+      if (!actionEl) return;
+      const action = actionEl.dataset.action;
+
+      if (action === "simulate") triggerAnomaly();
+      if (action === "resolve") handleAction(actionEl.dataset.choice);
+    });
+
+    resetBtn.addEventListener("click", reset);
+    render();
+  </script>
+</body>
+</html>

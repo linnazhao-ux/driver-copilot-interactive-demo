@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Homepage Redesign Preview</title>
+  <style>
+    :root {
+      --orange: #ee4d2d;
+      --orange-dark: #dc321f;
+      --orange-soft: #fff0ec;
+      --amber: #ff9f2e;
+      --green: #2fb06f;
+      --ink: #303346;
+      --muted: #84899b;
+      --line: #eee8f3;
+      --bg: #f8f2fb;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at 25% 10%, #5a1d16, #180706 58%, #0b0303);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+    }
+
+    .phone {
+      width: 375px;
+      height: 812px;
+      overflow: hidden;
+      border-radius: 34px;
+      background: var(--bg);
+      border: 10px solid #101014;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .45);
+    }
+
+    .status {
+      height: 54px;
+      padding: 12px 24px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      background: #fff;
+      color: #111319;
+      font-size: 16px;
+      font-weight: 850;
+    }
+
+    .home {
+      height: calc(100% - 54px);
+      overflow: auto;
+      padding-bottom: 24px;
+      background: linear-gradient(180deg, #fff8f5 0, var(--bg) 250px);
+    }
+
+    .home-hero {
+      padding: 17px 18px 14px;
+      border-radius: 0 0 22px 22px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.08) 0 56%, rgba(255,255,255,0) 56%),
+        linear-gradient(135deg, #ff8c50 0%, #ff603d 52%, #df3323 100%);
+      color: #fff;
+    }
+
+    .home-search-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .weather {
+      font-size: 18px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .search-pill {
+      height: 38px;
+      flex: 1;
+      min-width: 0;
+      padding: 0 12px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,.27);
+      color: rgba(255,255,255,.96);
+      font-size: 12px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .search-pill svg,
+    .head-icon svg {
+      width: 19px;
+      height: 19px;
+      flex-shrink: 0;
+    }
+
+    .head-icon {
+      width: 28px;
+      height: 32px;
+      border: 0;
+      background: transparent;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      padding: 0;
+    }
+
+    .ops-card {
+      margin-top: 16px;
+      padding: 8px;
+      border: 1px solid rgba(255,255,255,.42);
+      border-radius: 20px;
+      background: rgba(255,255,255,.97);
+      box-shadow: 0 12px 28px rgba(119, 28, 8, .15);
+      color: var(--ink);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .ops-panel {
+      min-width: 0;
+      position: relative;
+      overflow: hidden;
+      padding: 10px 10px 9px;
+      border: 1px solid #f1ded9;
+      border-radius: 15px;
+      background:
+        radial-gradient(circle at 92% 12%, rgba(238,77,45,.11) 0 6px, transparent 7px),
+        linear-gradient(180deg, #fff, #fff8f6);
+    }
+
+    .ops-panel.pickup {
+      background:
+        radial-gradient(circle at 92% 12%, rgba(255,159,46,.14) 0 6px, transparent 7px),
+        linear-gradient(180deg, #fff, #fffaf3);
+    }
+
+    .ops-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 9px;
+    }
+
+    .ops-count {
+      display: flex;
+      align-items: flex-end;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .ops-count span {
+      display: block;
+      padding-bottom: 4px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .ops-count strong {
+      font-size: 31px;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .ops-title em {
+      font-style: normal;
+      color: var(--orange);
+      font-size: 10px;
+      font-weight: 850;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: var(--orange-soft);
+      white-space: nowrap;
+    }
+
+    .ops-subgrid {
+      display: grid;
+      gap: 6px;
+    }
+
+    .ops-mini {
+      min-height: 34px;
+      padding: 6px 8px;
+      border-radius: 9px;
+      border: 1px solid #f3e4df;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: #fff;
+    }
+
+    .ops-mini span {
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.05;
+      font-weight: 750;
+    }
+
+    .ops-mini strong {
+      color: var(--orange);
+      font-size: 17px;
+      line-height: 1;
+    }
+
+    .ai-tip {
+      margin-top: 7px;
+      height: 28px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 10px;
+      background: rgba(255,255,255,.16);
+      border: 1px solid rgba(255,255,255,.3);
+      color: #fff;
+    }
+
+    .ai-tip strong {
+      display: inline;
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 850;
+    }
+
+    .ai-tip span {
+      display: inline;
+      margin-top: 0;
+      color: rgba(255,255,255,.74);
+      font-size: 10px;
+      font-weight: 650;
+    }
+
+    .notice,
+    .exception-card,
+    .banner-card {
+      margin: 12px 18px 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .notice {
+      min-height: 54px;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      box-shadow: 0 2px 8px rgba(50, 32, 20, .03);
+    }
+
+    .notice-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--orange-soft);
+      color: var(--orange);
+    }
+
+    .notice-text {
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .notice-time,
+    .notice-arrow {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .exception-card {
+      padding: 14px 12px 12px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 11px;
+    }
+
+    .section-head strong {
+      font-size: 16px;
+      color: var(--ink);
+    }
+
+    .section-head span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .exception-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .exception-item {
+      min-height: 74px;
+      border: 1px solid #f0e7f1;
+      border-radius: 7px;
+      padding: 10px 8px;
+      background: #fff;
+    }
+
+    .exception-item .mini-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 7px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+
+    .exception-item.progress .mini-icon { background: var(--green); }
+    .exception-item.onhold .mini-icon { background: var(--amber); }
+    .exception-item.redelivery .mini-icon { background: var(--orange); }
+
+    .exception-item strong {
+      display: block;
+      font-size: 12px;
+      line-height: 1.1;
+      color: var(--ink);
+    }
+
+    .exception-item span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+    }
+
+    .banner-card {
+      min-height: 70px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(120deg, #fff4dc, #ffe4d8);
+    }
+
+    .banner-card strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    .banner-card span {
+      display: block;
+      margin-top: 5px;
+      color: #805f62;
+      font-size: 12px;
+    }
+
+    .banner-card button {
+      height: 34px;
+      border: 0;
+      border-radius: 999px;
+      padding: 0 18px;
+      background: var(--orange);
+      color: #fff;
+      font-weight: 850;
+    }
+
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      margin-top: 10px;
+    }
+
+    .dots span {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #f2b3a5;
+    }
+
+    .dots span:first-child {
+      width: 18px;
+      background: var(--orange);
+    }
+  </style>
+</head>
+<body>
+  <main class="phone" aria-label="Homepage redesign preview">
+    <div class="status"><span>08:41</span><span>5G</span></div>
+    <div class="home">
+      <section class="home-hero">
+        <div class="home-search-row">
+          <span class="weather">20&deg;C</span>
+          <div class="search-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+            <span>Search order by order number or phone number</span>
+          </div>
+          <button class="head-icon" aria-label="Notification">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+          </button>
+          <button class="head-icon" aria-label="Scan">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M7 3H4a1 1 0 00-1 1v3"/><path d="M17 3h3a1 1 0 011 1v3"/><path d="M7 21H4a1 1 0 01-1-1v-3"/><path d="M17 21h3a1 1 0 001-1v-3"/><path d="M7 12h10"/></svg>
+          </button>
+        </div>
+
+        <section class="ops-card">
+          <div class="ops-panel delivery">
+            <div class="ops-title">
+              <div class="ops-count"><strong>5</strong><span>Delivery</span></div>
+              <em>Today</em>
+            </div>
+            <div class="ops-subgrid">
+              <div class="ops-mini"><span>Urgent</span><strong>1</strong></div>
+              <div class="ops-mini"><span>Pending Payment</span><strong>1</strong></div>
+            </div>
+          </div>
+          <div class="ops-panel pickup">
+            <div class="ops-title">
+              <div class="ops-count"><strong>3</strong><span>Pickup</span></div>
+              <em>Today</em>
+            </div>
+            <div class="ops-subgrid">
+              <div class="ops-mini"><span>Urgent</span><strong>0</strong></div>
+              <div class="ops-mini"><span>Pending Payment</span><strong>1</strong></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="ai-tip">
+          <strong>AI Briefing</strong>
+          <span>· Tap to analyze today's tasks</span>
+        </div>
+      </section>
+
+      <section class="notice">
+        <span class="notice-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+        </span>
+        <span class="notice-text">One order need redelivery</span>
+        <span class="notice-time">1h ago</span>
+        <span class="notice-arrow">&rsaquo;</span>
+      </section>
+
+      <section class="exception-card">
+        <div class="section-head">
+          <strong>Exceptions Analysis</strong>
+          <span>Today's focus</span>
+        </div>
+        <div class="exception-grid">
+          <div class="exception-item progress">
+            <span class="mini-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"/><path d="M8 19V9"/><path d="M12 19V7"/><path d="M16 19v-5"/><path d="M20 19V3"/></svg>
+            </span>
+            <strong>Progress</strong>
+            <span>0/5 delivered</span>
+          </div>
+          <div class="exception-item onhold">
+            <span class="mini-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>
+            </span>
+            <strong>On-hold</strong>
+            <span>1 needs review</span>
+          </div>
+          <div class="exception-item redelivery">
+            <span class="mini-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 019-9 9 9 0 016.4 2.6"/><path d="M21 4v6h-6"/><path d="M21 12a9 9 0 01-9 9 9 9 0 01-6.4-2.6"/><path d="M3 20v-6h6"/></svg>
+            </span>
+            <strong>Redelivery</strong>
+            <span>1 moved to To-do</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="banner-card">
+        <div>
+          <strong>Invite Rewards</strong>
+          <span>Invite couriers and earn extra bonuses</span>
+        </div>
+        <button>View</button>
+      </section>
+      <div class="dots"><span></span><span></span></div>
+    </div>
+  </main>
+</body>
+</html>

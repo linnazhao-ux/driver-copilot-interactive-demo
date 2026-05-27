@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>To-do List Driver Profiles</title>
+  <style>
+    :root {
+      --orange: #ee4d2d;
+      --orange-dark: #d83f24;
+      --amber: #d9921e;
+      --amber-soft: #fff6df;
+      --amber-line: #f0c36c;
+      --green: #24a66a;
+      --ink: #303244;
+      --muted: #858b9d;
+      --line: #e9e2ee;
+      --page: #f8f2fb;
+      --card: #fff;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(238,77,45,.28), transparent 30%),
+        linear-gradient(145deg, #1a0705 0%, #100608 58%, #080409 100%);
+      color: var(--ink);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button {
+      border: 0;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .demo {
+      width: 375px;
+    }
+
+    .demo-head {
+      margin-bottom: 12px;
+      color: #fff;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .title-row h1 {
+      font-size: 19px;
+      line-height: 1.18;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .reset-btn {
+      height: 34px;
+      padding: 0 14px;
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: 999px;
+      color: #fff;
+      background: rgba(255,255,255,.11);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .profile-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 5px;
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 16px;
+      background: rgba(255,255,255,.1);
+      backdrop-filter: blur(16px);
+    }
+
+    .profile-tab {
+      height: 42px;
+      border-radius: 12px;
+      background: transparent;
+      color: rgba(255,255,255,.76);
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .profile-tab.active.new {
+      color: #fff;
+      background: linear-gradient(135deg, #45c887, var(--green));
+      box-shadow: 0 10px 22px rgba(36,166,106,.28);
+    }
+
+    .profile-tab.active.experienced {
+      color: #fff;
+      background: linear-gradient(135deg, #f8b64e, var(--amber));
+      box-shadow: 0 10px 22px rgba(217,146,30,.28);
+    }
+
+    .phone {
+      position: relative;
+      width: 375px;
+      height: 812px;
+      padding: 14px 12px 12px;
+      border-radius: 46px;
+      background: #101010;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.18), 0 24px 78px rgba(0,0,0,.5);
+    }
+
+    .screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      border-radius: 36px;
+      background: var(--page);
+    }
+
+    .notch {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      width: 118px;
+      height: 34px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: #111;
+      z-index: 4;
+    }
+
+    .status-bar {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      color: #111;
+      background: #fff;
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .battery {
+      position: relative;
+      width: 24px;
+      height: 12px;
+      border: 2px solid currentColor;
+      border-radius: 4px;
+    }
+
+    .battery::after {
+      content: "";
+      position: absolute;
+      right: -5px;
+      top: 3px;
+      width: 3px;
+      height: 5px;
+      border-radius: 2px;
+      background: currentColor;
+    }
+
+    .battery span {
+      display: block;
+      width: 13px;
+      height: 6px;
+      margin: 1px;
+      border-radius: 2px;
+      background: currentColor;
+    }
+
+    .app-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 76px;
+      padding: 0 22px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .mode-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 42px;
+      padding: 0 15px;
+      border-radius: 999px;
+      background: #fff0ee;
+      color: var(--orange);
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .mode-pill svg,
+    .head-icons svg,
+    .nav-item svg {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .mode-pill svg,
+    .head-icons svg {
+      width: 23px;
+      height: 23px;
+    }
+
+    .head-icons {
+      display: flex;
+      gap: 16px;
+      color: var(--orange);
+    }
+
+    .tabs-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      height: 58px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .task-tab {
+      display: grid;
+      place-items: center;
+      position: relative;
+      color: #5f6478;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .task-tab.active {
+      color: var(--ink);
+    }
+
+    .task-tab.active::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 20px;
+      right: 20px;
+      height: 3px;
+      background: var(--orange);
+    }
+
+    .content {
+      height: calc(100% - 44px - 76px - 58px);
+      overflow-y: auto;
+      padding: 14px 14px 88px;
+    }
+
+    .compare-banner {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 12px 12px 12px 14px;
+      border: 1px solid var(--amber-line);
+      border-radius: 10px;
+      background: var(--amber-soft);
+      box-shadow: 0 8px 22px rgba(217,146,30,.12);
+    }
+
+    .compare-banner strong {
+      display: block;
+      color: #794c0f;
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .compare-banner span {
+      display: block;
+      margin-top: 4px;
+      color: #9b6a1b;
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .compare-btn {
+      height: 36px;
+      padding: 0 13px;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--amber);
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .section-title {
+      margin: 8px 0 10px;
+      color: #5f6478;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .task-list {
+      min-height: 200px;
+    }
+
+    .task-card {
+      margin-bottom: 10px;
+      padding: 12px 12px 11px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+      box-shadow: 0 4px 14px rgba(30,20,40,.035);
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, opacity 180ms ease;
+    }
+
+    .task-card.dragging {
+      opacity: .66;
+      transform: scale(.985);
+      border-color: var(--amber);
+      box-shadow: 0 16px 34px rgba(217,146,30,.18);
+    }
+
+    .task-card.drag-over {
+      transform: translateY(3px);
+      border-color: var(--amber-line);
+    }
+
+    .task-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-bottom: 9px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .task-top strong {
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .address {
+      margin-top: 11px;
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.38;
+      font-weight: 900;
+    }
+
+    .meta {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 8px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      height: 22px;
+      padding: 0 7px;
+      border: 1px solid #b8bdca;
+      border-radius: 3px;
+      color: #7b8194;
+      background: #fff;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .tag.urgent {
+      border-color: var(--orange);
+      color: #fff;
+      background: var(--orange);
+      font-weight: 900;
+    }
+
+    .drag-handle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      height: 34px;
+      margin-top: 11px;
+      border-top: 1px dashed #ded9e5;
+      color: #9b6a1b;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .drag-handle svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.3;
+      stroke-linecap: round;
+    }
+
+    .compare-panel {
+      margin: 14px 0 6px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 12px 30px rgba(30,20,40,.08);
+      overflow: hidden;
+    }
+
+    .compare-panel-head {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .compare-panel-head strong {
+      display: block;
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .compare-panel-head span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--line);
+    }
+
+    .compare-col {
+      background: #fff;
+    }
+
+    .compare-col-title {
+      padding: 9px 10px;
+      color: #6d7284;
+      background: #faf7fc;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .compare-row {
+      min-height: 54px;
+      padding: 9px 10px;
+      border-top: 1px solid var(--line);
+      color: #9aa0b0;
+      background: #fafafa;
+    }
+
+    .compare-row.moved {
+      color: #6f450f;
+      background: #fff6df;
+    }
+
+    .compare-row strong {
+      display: block;
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 900;
+    }
+
+    .compare-row span {
+      display: block;
+      margin-top: 4px;
+      font-size: 11px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .compare-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 12px;
+      border-top: 1px solid var(--line);
+    }
+
+    .panel-btn {
+      height: 40px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .panel-btn.primary {
+      color: #fff;
+      background: var(--amber);
+    }
+
+    .panel-btn.secondary {
+      border: 1px solid #d7d2df;
+      color: #5f6478;
+      background: #fff;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      height: 72px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: center;
+      border-top: 1px solid var(--line);
+      border-radius: 0 0 34px 34px;
+      background: rgba(255,255,255,.96);
+      color: #8c91a3;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .nav-item {
+      display: grid;
+      place-items: center;
+      gap: 4px;
+    }
+
+    .nav-item.active {
+      color: var(--orange);
+    }
+
+    .nav-item svg {
+      width: 23px;
+      height: 23px;
+    }
+
+    .home-indicator {
+      position: absolute;
+      bottom: 6px;
+      left: 50%;
+      width: 130px;
+      height: 5px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: #111;
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+  <section class="demo" aria-label="To-do list driver profile prototype">
+    <header class="demo-head">
+      <div class="title-row">
+        <h1>To-do List Profile Logic</h1>
+        <button class="reset-btn" id="resetBtn">Reset</button>
+      </div>
+      <nav class="profile-tabs" aria-label="Driver profile">
+        <button class="profile-tab active new" data-profile="new">New driver</button>
+        <button class="profile-tab" data-profile="experienced">Experienced driver</button>
+      </nav>
+    </header>
+
+    <div class="phone">
+      <div class="screen">
+        <div class="notch"></div>
+        <div class="status-bar">
+          <span>08:41</span>
+          <span></span>
+          <span style="display:flex;align-items:center;gap:8px;">5G <span class="battery"><span></span></span></span>
+        </div>
+        <div class="app-head">
+          <div class="mode-pill">
+            <svg viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5"/><path d="M12 12v9"/></svg>
+            Delivery
+          </div>
+          <div class="head-icons">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 7h18s-3 0-3-7"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          </div>
+        </div>
+        <div class="tabs-row">
+          <div class="task-tab active">To-do (4)</div>
+          <div class="task-tab">Delivered (0)</div>
+          <div class="task-tab">On-Hold (0)</div>
+        </div>
+        <main class="content" id="app"></main>
+        <nav class="bottom-nav">
+          <div class="nav-item"><svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg><span>Homepage</span></div>
+          <div class="nav-item active"><svg viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5"/><path d="M12 12v9"/></svg><span>To do</span></div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><rect x="7" y="8" width="10" height="10" rx="3"/><path d="M12 4v4"/><path d="M8 14h.01M16 14h.01"/></svg><span>Chatbot</span></div>
+          <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.7-4 14.3-4 16 0"/></svg><span>Profile</span></div>
+        </nav>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const ORIGINAL_ORDER = [
+      {
+        id: "PH001",
+        orderId: "PH005314767368",
+        address: "Jl. Letnan Jenderal S. Parman, Gradogol, 114370 Jakarta Cakung Satu",
+        buyer: "Nick Chan",
+        tags: ["Co-check", "COD", "ASF"]
+      },
+      {
+        id: "PH002",
+        orderId: "PH005314767421",
+        address: "No. 18 Jalan Setia, shop lot behind loading bay",
+        buyer: "Nick Chan",
+        tags: ["Urgent", "Shops&Services", "COD", "ASF"]
+      },
+      {
+        id: "PH003",
+        orderId: "PH005314767602",
+        address: "Factory Gate 2, South Entrance, security counter",
+        buyer: "Lim W.",
+        tags: ["Hard-find Address", "NSS", "COD"]
+      },
+      {
+        id: "PH004",
+        orderId: "PH005314767588",
+        address: "Kampung Baru, Road 3, blue gate near mini mart",
+        buyer: "Nur H.",
+        tags: ["Redelivery", "COD"]
+      }
+    ];
+
+    const AI_RECOMMENDED = [
+      { ...ORIGINAL_ORDER[1], moved: true, reason: "urgent SLA today" },
+      { ...ORIGINAL_ORDER[2], moved: true, reason: "hard-to-find address" },
+      { ...ORIGINAL_ORDER[0], moved: true, reason: "lower route risk" },
+      { ...ORIGINAL_ORDER[3], moved: false, reason: "same relative priority" }
+    ];
+
+    const app = document.getElementById("app");
+    const resetBtn = document.getElementById("resetBtn");
+    const profileTabs = [...document.querySelectorAll(".profile-tab")];
+
+    const state = {
+      profile: "new",
+      currentOrder: [],
+      compareOpen: false,
+      manualAdjusted: false,
+      draggingId: ""
+    };
+
+    function cloneOrder(list) {
+      return list.map(item => ({ ...item, tags: [...item.tags] }));
+    }
+
+    function reset(profile = state.profile) {
+      state.profile = profile;
+      state.currentOrder = profile === "new" ? cloneOrder(AI_RECOMMENDED) : cloneOrder(AI_RECOMMENDED);
+      state.compareOpen = false;
+      state.manualAdjusted = false;
+      state.draggingId = "";
+      profileTabs.forEach(tab => {
+        tab.classList.toggle("active", tab.dataset.profile === profile);
+        tab.classList.toggle("new", tab.dataset.profile === "new");
+        tab.classList.toggle("experienced", tab.dataset.profile === "experienced");
+      });
+      render();
+    }
+
+    function compareBanner() {
+      if (state.profile !== "experienced") return "";
+      const subtitle = state.manualAdjusted
+        ? "Manually adjusted | changes saved to your profile"
+        : "AI moved PH002 and PH003 earlier for urgent SLA and hard-to-find risk.";
+      return `
+        <section class="compare-banner">
+          <div>
+            <strong>AI adjusted this route order</strong>
+            <span>${subtitle}</span>
+          </div>
+          <button class="compare-btn" data-action="compare">Compare</button>
+        </section>`;
+    }
+
+    function tagHtml(tag) {
+      return `<span class="tag ${tag === "Urgent" ? "urgent" : ""}">${tag}</span>`;
+    }
+
+    function taskCard(task, index) {
+      const dragHandle = state.profile === "experienced"
+        ? `<div class="drag-handle" draggable="true" data-drag-id="${task.id}">
+            <svg viewBox="0 0 24 24"><path d="M8 7h8M8 12h8M8 17h8"/></svg>
+            <span>Hold to reorder</span>
+          </div>`
+        : "";
+      return `
+        <article class="task-card" data-task-id="${task.id}" data-index="${index}">
+          <div class="task-top">
+            <strong>${task.orderId}</strong>
+            <span>${String(index + 1).padStart(2, "0")}</span>
+          </div>
+          <div class="address">${task.address}</div>
+          <div class="meta">Receiver ${task.buyer}</div>
+          <div class="tag-row">${task.tags.map(tagHtml).join("")}</div>
+          ${dragHandle}
+        </article>`;
+    }
+
+    function compareRow(item, index, source) {
+      const aiIndex = AI_RECOMMENDED.findIndex(order => order.id === item.id);
+      const originalIndex = ORIGINAL_ORDER.findIndex(order => order.id === item.id);
+      const moved = aiIndex !== originalIndex;
+      const label = source === "original" ? `Original #${index + 1}` : `AI #${index + 1}`;
+      return `
+        <div class="compare-row ${moved ? "moved" : ""}">
+          <strong>${label} | ${item.id}</strong>
+          <span>${item.orderId}</span>
+        </div>`;
+    }
+
+    function comparePanel() {
+      if (!state.compareOpen || state.profile !== "experienced") return "";
+      return `
+        <section class="compare-panel">
+          <div class="compare-panel-head">
+            <strong>Route order comparison</strong>
+            <span>Amber rows changed position in the AI recommended order.</span>
+          </div>
+          <div class="compare-grid">
+            <div class="compare-col">
+              <div class="compare-col-title">Original order</div>
+              ${ORIGINAL_ORDER.map((item, index) => compareRow(item, index, "original")).join("")}
+            </div>
+            <div class="compare-col">
+              <div class="compare-col-title">AI recommended</div>
+              ${AI_RECOMMENDED.map((item, index) => compareRow(item, index, "ai")).join("")}
+            </div>
+          </div>
+          <div class="compare-actions">
+            <button class="panel-btn primary" data-action="keep-ai">Keep AI order</button>
+            <button class="panel-btn secondary" data-action="restore-original">Restore original</button>
+          </div>
+        </section>`;
+    }
+
+    function render() {
+      app.innerHTML = `
+        ${compareBanner()}
+        <div class="section-title">To-do orders</div>
+        <section class="task-list">
+          ${state.currentOrder.map(taskCard).join("")}
+        </section>
+        ${comparePanel()}
+      `;
+    }
+
+    function moveTask(sourceId, targetId) {
+      if (!sourceId || !targetId || sourceId === targetId) return;
+      const sourceIndex = state.currentOrder.findIndex(item => item.id === sourceId);
+      const targetIndex = state.currentOrder.findIndex(item => item.id === targetId);
+      if (sourceIndex < 0 || targetIndex < 0) return;
+      const next = [...state.currentOrder];
+      const [moved] = next.splice(sourceIndex, 1);
+      next.splice(targetIndex, 0, moved);
+      state.currentOrder = next;
+      state.manualAdjusted = true;
+      state.compareOpen = false;
+      render();
+    }
+
+    document.addEventListener("click", event => {
+      const profileTab = event.target.closest("[data-profile]");
+      if (profileTab) {
+        reset(profileTab.dataset.profile);
+        return;
+      }
+
+      const actionEl = event.target.closest("[data-action]");
+      if (!actionEl) return;
+      const action = actionEl.dataset.action;
+
+      if (action === "compare") {
+        state.compareOpen = !state.compareOpen;
+        render();
+      }
+
+      if (action === "keep-ai") {
+        state.currentOrder = cloneOrder(AI_RECOMMENDED);
+        state.compareOpen = false;
+        render();
+      }
+
+      if (action === "restore-original") {
+        state.currentOrder = cloneOrder(ORIGINAL_ORDER);
+        state.manualAdjusted = true;
+        state.compareOpen = false;
+        render();
+      }
+    });
+
+    document.addEventListener("dragstart", event => {
+      const handle = event.target.closest("[data-drag-id]");
+      if (!handle) return;
+      state.draggingId = handle.dataset.dragId;
+      const card = handle.closest(".task-card");
+      card.classList.add("dragging");
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData("text/plain", state.draggingId);
+    });
+
+    document.addEventListener("dragover", event => {
+      const card = event.target.closest(".task-card");
+      if (!card || state.profile !== "experienced") return;
+      event.preventDefault();
+      document.querySelectorAll(".task-card.drag-over").forEach(item => item.classList.remove("drag-over"));
+      card.classList.add("drag-over");
+    });
+
+    document.addEventListener("dragleave", event => {
+      const card = event.target.closest(".task-card");
+      if (card) card.classList.remove("drag-over");
+    });
+
+    document.addEventListener("drop", event => {
+      const card = event.target.closest(".task-card");
+      if (!card || state.profile !== "experienced") return;
+      event.preventDefault();
+      const sourceId = event.dataTransfer.getData("text/plain") || state.draggingId;
+      const targetId = card.dataset.taskId;
+      moveTask(sourceId, targetId);
+    });
+
+    document.addEventListener("dragend", () => {
+      state.draggingId = "";
+      document.querySelectorAll(".task-card").forEach(card => card.classList.remove("dragging", "drag-over"));
+    });
+
+    resetBtn.addEventListener("click", () => reset());
+    reset("new");
+  </script>
+</body>
+</html>

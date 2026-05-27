@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Driver App — Hard to Find Demo</title>
+  <link rel="stylesheet" href="styles/base.css" />
+  <link rel="stylesheet" href="styles/page0.css" />
+  <link rel="stylesheet" href="styles/page1.css" />
+  <link rel="stylesheet" href="styles/page2.css" />
+  <link rel="stylesheet" href="styles/page3.css" />
+  <link rel="stylesheet" href="styles/cursor.css?v=20260523-cursor-semantics" />
+</head>
+<body>
+  <div class="demo-stage">
+
+    <!-- Simulation Control Panel (left of phone, hidden until page2 sim active) -->
+    <div class="sim-panel" id="sim-panel" style="display:none">
+      <div class="sim-panel-title">Move Simulator</div>
+
+      <!-- Location control -->
+      <div class="sim-section">
+        <div class="sim-section-label">Current Position</div>
+        <button class="sim-btn sim-btn-primary" id="sim-pick-loc-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Pick on Map
+        </button>
+        <div class="sim-coords" id="sim-coords">No position set</div>
+      </div>
+
+      <div class="sim-section">
+        <div class="sim-section-label">速度设置</div>
+        <div class="sim-speed-row">
+          <label class="sim-speed-label" for="sim-ride-speed">骑行速度</label>
+          <input type="range" id="sim-ride-speed" class="sim-speed-range" min="1" max="8" value="1" />
+          <span class="sim-speed-val" id="sim-ride-speed-val">×1</span>
+        </div>
+        <div class="sim-speed-hint">沿路线推进快慢（数值越大越快）</div>
+        <div class="sim-speed-row">
+          <label class="sim-speed-label" for="sim-walk-speed">步行速度</label>
+          <input type="range" id="sim-walk-speed" class="sim-speed-range" min="0.5" max="5" step="0.1" value="1.2" />
+          <span class="sim-speed-val" id="sim-walk-speed-val">1.2 m/s</span>
+        </div>
+      </div>
+
+      <!-- Ride action -->
+      <div class="sim-section" id="sim-ride-section">
+        <div class="sim-section-label">Ride to Key Point</div>
+        <button class="sim-btn sim-btn-ride" id="sim-ride-btn" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM5 12c-2.8 0-5 2.2-5 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 8.5c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5 3.5 1.6 3.5 3.5-1.6 3.5-3.5 3.5zm5.8-10l2.4-2.4.8.8c1.3 1.3 3 2.1 5.1 2.1V9c-1.5 0-2.7-.6-3.6-1.5l-1.9-1.9c-.5-.4-1-.6-1.6-.6s-1.1.2-1.4.6L7.8 8.4c-.4.4-.6.9-.6 1.4 0 .6.2 1.1.6 1.4L11 14v5h2v-6.2l-2.2-2.3zM19 12c-2.8 0-5 2.2-5 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 8.5c-1.9 0-3.5-1.6-3.5-3.5s1.6-3.5 3.5-3.5 3.5 1.6 3.5 3.5-1.6 3.5-3.5 3.5z"/></svg>
+          Ride
+        </button>
+        <button class="sim-btn sim-btn-stop" id="sim-ride-stop-btn" style="display:none">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+          Stop Ride
+        </button>
+        <div class="sim-ride-info" id="sim-ride-info"></div>
+      </div>
+
+      <!-- Walk section (hidden during ride mode) -->
+      <div id="sim-walk-section">
+        <!-- Compass Wheel -->
+        <div class="sim-section">
+          <div class="sim-section-label">Phone Heading</div>
+          <div class="sim-compass-wrap">
+            <div class="sim-compass" id="sim-compass">
+              <div class="sim-compass-ring">
+                <span class="sim-compass-n">N</span>
+                <span class="sim-compass-e">E</span>
+                <span class="sim-compass-s">S</span>
+                <span class="sim-compass-w">W</span>
+              </div>
+              <div class="sim-compass-needle" id="sim-compass-needle"></div>
+              <div class="sim-compass-knob" id="sim-compass-knob"></div>
+            </div>
+          </div>
+          <div class="sim-heading-value"><span id="sim-heading-val">0</span>°</div>
+        </div>
+
+        <!-- Walk action -->
+        <div class="sim-section">
+          <div class="sim-section-label">Walk Simulation</div>
+          <button class="sim-btn sim-btn-walk" id="sim-walk-btn" disabled>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6.49 8.98v5h2v-3.5l1.8-.7-1.6 8.1-4.7-1-.4 2 6.3 1.5z"/></svg>
+            Walk
+          </button>
+          <button class="sim-btn sim-btn-stop" id="sim-stop-btn" style="display:none">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+            Stop
+          </button>
+          <div class="sim-walk-info" id="sim-walk-info"></div>
+        </div>
+      </div>
+
+      <button class="sim-btn sim-btn-reset" id="sim-reset-btn">Reset Simulation</button>
+
+      <!-- Status -->
+      <div class="sim-section">
+        <div class="sim-section-label">Navigation Status</div>
+        <div class="sim-status-card" id="sim-status-card">
+          <div class="sim-status-row">
+            <span class="sim-status-key">Distance to route</span>
+            <span class="sim-status-val" id="sim-dist-val">—</span>
+          </div>
+          <div class="sim-status-row">
+            <span class="sim-status-key">Direction deviation</span>
+            <span class="sim-status-val" id="sim-dev-val">—</span>
+          </div>
+          <div class="sim-status-row">
+            <span class="sim-status-key">Nearest segment</span>
+            <span class="sim-status-val" id="sim-seg-val">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Deviation toast option -->
+      <div class="sim-section">
+        <div class="sim-section-label">Deviation toast</div>
+        <label class="sim-toggle-row" for="sim-show-ontrack-toast">
+          <input type="checkbox" id="sim-show-ontrack-toast" />
+          <span class="sim-toggle-label">Show when On Track</span>
+        </label>
+        <div class="sim-speed-hint">Unchecked (default): hide while On Track; still shows when off route or misaligned.</div>
+        <label class="sim-toggle-row" for="sim-toast-compact" style="margin-top:6px;">
+          <input type="checkbox" id="sim-toast-compact" />
+          <span class="sim-toggle-label">Compact style (icon + title only)</span>
+        </label>
+        <div class="sim-speed-hint">Hide subtitle, show only icon and title in a compact layout.</div>
+      </div>
+    </div>
+
+    <!-- Phone Device -->
+    <div class="phone-device">
+      <div class="phone-btn btn-vol-up"></div>
+      <div class="phone-btn btn-vol-down"></div>
+      <div class="phone-btn btn-power"></div>
+      <div class="phone-screen-wrapper">
+        <!-- Status Bar -->
+        <div class="status-bar">
+          <span class="status-time">18:60</span>
+          <div class="status-pill"></div>
+          <div class="status-icons">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              <path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/>
+            </svg>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              <path d="M1.5 8.5C5.08 5.08 9.79 3 15 3s9.92 2.08 13.5 5.5L26 11c-3-2.89-7.1-4.67-11-4.67S7 8.11 4 11L1.5 8.5z" opacity=".3"/>
+              <path d="M15 21l3-3c-1.66-1.66-3.95-2.69-6.5-2.69s-4.84 1.03-6.5 2.69l3 3c1.1-1.1 2.61-1.78 4.25-1.78s3.15.68 4.25 1.78z"/>
+            </svg>
+            <div class="status-battery">
+              <div class="battery-body">
+                <div class="battery-fill"></div>
+              </div>
+              <div class="battery-tip"></div>
+            </div>
+          </div>
+        </div>
+        <!-- App Content -->
+        <div class="app-container" id="app"></div>
+        <!-- Home Indicator -->
+        <div class="home-indicator-bar">
+          <div class="home-indicator"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Demo Side Panel -->
+    <div class="demo-panel">
+      <div class="demo-logo">
+        <svg viewBox="0 0 40 40" width="40" height="40" fill="none">
+          <rect width="40" height="40" rx="12" fill="#E84436"/>
+          <path d="M20 8C14.48 8 10 12.48 10 18c0 7.5 10 18 10 18s10-10.5 10-18c0-5.52-4.48-10-10-10zm0 13.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z" fill="white"/>
+        </svg>
+        <span>Delivery App</span>
+      </div>
+      <h2 class="demo-title">Hard to Find<br/>Location Feature</h2>
+      <p class="demo-desc">Interactive demo of the Navigation Help flow for delivery drivers.</p>
+
+      <div class="demo-nav">
+        <div class="demo-nav-label">Pages</div>
+        <div class="step-item" data-page="page0">
+          <div class="step-dot">0</div>
+          <div class="step-info">
+            <div class="step-name">Order List</div>
+            <div class="step-hint">Buyer address groups with order counts</div>
+          </div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-item" data-page="page1">
+          <div class="step-dot">1</div>
+          <div class="step-info">
+            <div class="step-name">Task Detail</div>
+            <div class="step-hint">PT detail card with Hard to Find banner</div>
+          </div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-item" data-page="page2">
+          <div class="step-dot">2</div>
+          <div class="step-info">
+            <div class="step-name">Navigation Help</div>
+            <div class="step-hint">Map + route guide with key waypoints</div>
+          </div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-item" data-page="page3">
+          <div class="step-dot">3</div>
+          <div class="step-info">
+            <div class="step-name">Improve Navigation</div>
+            <div class="step-hint">Feedback form for route improvement</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-tip">
+        <svg viewBox="0 0 20 20" width="16" height="16" fill="currentColor" style="flex-shrink:0;margin-top:2px;">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"/>
+        </svg>
+        <span>Tap the banner or side tabs to navigate between pages</span>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="scripts/data.js"></script>
+  <script src="scripts/router.js"></script>
+  <script src="scripts/page0.js"></script>
+  <script src="scripts/page1.js"></script>
+  <script src="scripts/page2.js"></script>
+  <script src="scripts/page3.js"></script>
+
+  <!-- Google Maps API — loaded after our scripts so callbacks are defined -->
+  <script>
+    window._gMapsReady = false;
+    window._gMapsReadyQueue = [];
+    function onGoogleMapsReady() {
+      window._gMapsReady = true;
+      (window._gMapsReadyQueue || []).forEach(fn => fn());
+      window._gMapsReadyQueue = [];
+    }
+  </script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHYO3vKxz--j0rxiXPyROLJekx0LPHAkY&libraries=geometry&callback=onGoogleMapsReady"
+    async defer>
+  </script>
+</body>
+</html>
